@@ -13,3 +13,7 @@ generates an optimal schedule of operation and evaluates its metrics.
 * Insomnia REST Client
 * SQLite Studio
 * REST API
+
+### Database diagram
+![database diagram](src/main/resources/op-db-diagram.png)  
+[SQLite database schema](src/main/resources/schema.sql)

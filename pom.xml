@@ -13,7 +13,7 @@
     <version>1</version>
     <name>op</name>
     <description>Information system of actors, operation types and operations,
-        generates an optimal schedule of operation and evaluates its metrics</description>
+        generates an optimal schedule of operations and evaluates its metrics</description>
 
     <properties>
         <java.version>1.8</java.version>
