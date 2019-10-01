@@ -1,6 +1,7 @@
 package com.sergeykotov.op.domain;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Op {
     private long id;
@@ -68,6 +69,19 @@ public class Op {
 
     public void setScheduled(boolean scheduled) {
         this.scheduled = scheduled;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Op op = (Op) o;
+        return getId() == op.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 
     @Override

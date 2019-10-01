@@ -1,5 +1,7 @@
 package com.sergeykotov.op.domain;
 
+import java.util.Objects;
+
 public class Actor {
     private long id;
     private String name;
@@ -30,6 +32,19 @@ public class Actor {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Actor actor = (Actor) o;
+        return getId() == actor.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 
     @Override

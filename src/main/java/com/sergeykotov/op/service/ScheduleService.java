@@ -5,10 +5,11 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ScheduleService {
@@ -31,12 +32,12 @@ public class ScheduleService {
 
         log.info("generating a schedule...");
         long start = System.currentTimeMillis();
-        List<Op> scheduledOps = schedule(ops);
+        Stream<Op> scheduledOps = schedule(ops.stream());
         long elapsed = System.currentTimeMillis() - start;
         log.info("schedule has been generated");
 
-        log.info("saving " + scheduledOps.size() + " scheduled operations...");
-        boolean saved = opService.update(scheduledOps);
+        log.info("saving " + scheduledOps.count() + " scheduled operations...");
+        boolean saved = opService.update(scheduledOps.collect(Collectors.toList()));
         String result = saved ? "schedule has been generated" : "failed to generate a schedule";
         String note = result + ", elapsed " + elapsed + " milliseconds";
         if (saved) {
@@ -85,8 +86,30 @@ public class ScheduleService {
         return metrics;
     }
 
-    private List<Op> schedule(List<Op> ops) {
-        //TODO: implement schedule generation
-        return Collections.emptyList();
+    private Stream<Op> schedule(Stream<Op> ops) {
+        Stream<Stream<Op>> schedules = getSchedules(ops);
+        return getOptimalSchedule(schedules);
+    }
+
+    private Stream<Op> getOptimalSchedule(Stream<Stream<Op>> schedules) {
+        return schedules.min(Comparator.comparingDouble(this::getDeviation)).orElse(Stream.empty());
+    }
+
+    private double getDeviation(Stream<Op> ops) {
+        Set<Actor> actors = ops.map(Op::getActor).collect(Collectors.toSet());
+        int actorCount = actors.size();
+        double meanOpCountPerActor = (double) ops.count() / actorCount;
+        double deviationSum = 0.0;
+        for (Actor actor : actors) {
+            long opCountPerActor = ops.filter(o -> o.getActor().equals(actor)).count();
+            double deviation = Math.abs(opCountPerActor - meanOpCountPerActor);
+            deviationSum += deviation;
+        }
+        return deviationSum / actorCount;
+    }
+
+    private Stream<Stream<Op>> getSchedules(Stream<Op> ops) {
+        //TODO: implement composing all possible schedules
+        return Stream.empty();
     }
 }
