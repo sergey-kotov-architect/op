@@ -7,7 +7,7 @@ public class Metrics {
     private int opTypeCount;
     private int actorCount;
     private int opCount;
-    private double meanOpCount;
+    private double meanOpCountPerActor;
     private double meanOpCountDeviation;
     private Map<Actor, ActorMetrics> actorMetricsMap = new HashMap<>();
     private String note;
@@ -39,12 +39,12 @@ public class Metrics {
         this.opCount = opCount;
     }
 
-    public double getMeanOpCount() {
-        return meanOpCount;
+    public double getMeanOpCountPerActor() {
+        return meanOpCountPerActor;
     }
 
-    public void setMeanOpCount(double meanOpCount) {
-        this.meanOpCount = meanOpCount;
+    public void setMeanOpCountPerActor(double meanOpCountPerActor) {
+        this.meanOpCountPerActor = meanOpCountPerActor;
     }
 
     public double getMeanOpCountDeviation() {

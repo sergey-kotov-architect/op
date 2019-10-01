@@ -1,17 +1,17 @@
 package com.sergeykotov.op.domain;
 
 public class ActorMetrics {
-    private int opCount;
+    private long opCount;
     private double opCountDeviation;
 
     public ActorMetrics() {
     }
 
-    public int getOpCount() {
+    public long getOpCount() {
         return opCount;
     }
 
-    public void setOpCount(int opCount) {
+    public void setOpCount(long opCount) {
         this.opCount = opCount;
     }
 
