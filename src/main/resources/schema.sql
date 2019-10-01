@@ -1,6 +1,6 @@
 CREATE TABLE actor (
   id   INTEGER PRIMARY KEY,
-  name TEXT    UNIQUE NOT NULL,
+  name TEXT    NOT NULL UNIQUE,
   note TEXT
 );
 
