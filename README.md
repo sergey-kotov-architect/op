@@ -1,6 +1,10 @@
 Information system of actors, operation types and operations, 
 generates an optimal schedule of operation and evaluates its metrics.
 
+### Database diagram
+![database diagram](src/main/resources/op-db-diagram.png)  
+[SQLite database schema](src/main/resources/schema.sql)
+
 ### Technologies and tools
 * Java 8
 * SQLite
@@ -13,7 +17,3 @@ generates an optimal schedule of operation and evaluates its metrics.
 * Insomnia REST Client
 * SQLite Studio
 * REST API
-
-### Database diagram
-![database diagram](src/main/resources/op-db-diagram.png)  
-[SQLite database schema](src/main/resources/schema.sql)
