@@ -9,8 +9,8 @@ generates an optimal schedule of operation and evaluates its metrics.
 * create, get all, get by id, update, delete by id actor, operation type, operation
 
 ### Database
-![database diagram](src/main/resources/op-db-diagram.png)
-[SQLite database schema](src/main/resources/schema.sql)
+![database diagram](src/main/resources/op-db-diagram.png)  
+[SQLite database schema](src/main/resources/schema.sql)  
 Taking into consideration a very small number of database objects it was 
 decided to use JDBC and connection pool to increase performance instead 
 of Spring Data or any other ORM framework.
