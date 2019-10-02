@@ -22,8 +22,8 @@ public class OpController {
         return opService.create(op);
     }
 
-    @PostMapping
-    public boolean create(@RequestBody List<Op> ops) {
+    @PostMapping("/list")
+    public boolean createList(@RequestBody List<Op> ops) {
         return opService.create(ops);
     }
 
@@ -42,8 +42,8 @@ public class OpController {
         return opService.update(op);
     }
 
-    @PutMapping
-    public boolean update(@RequestBody List<Op> ops) {
+    @PutMapping("/list")
+    public boolean updateList(@RequestBody List<Op> ops) {
         return opService.update(ops);
     }
 
