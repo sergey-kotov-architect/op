@@ -41,8 +41,7 @@ from its mean value.
 * REST API
 
 ### Future improvements
-* add authentication and authorization layer, probably utilising Spring 
-Security or simply BCrypt
+* add authentication and authorization layer, probably utilising Spring Security or simply BCrypt
 * prevent too many requests per time unit
 * handle concurrent requests properly
 * devise an approximate, heuristic solution
