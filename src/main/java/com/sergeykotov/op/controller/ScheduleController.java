@@ -26,13 +26,13 @@ public class ScheduleController {
         return scheduleService.get();
     }
 
-    @PutMapping
-    public String generate() {
-        return scheduleService.generate();
-    }
-
     @GetMapping("/metrics")
     public Metrics evaluateMetrics() {
         return scheduleService.evaluateMetrics();
+    }
+
+    @PutMapping
+    public String generate() {
+        return scheduleService.generate();
     }
 }

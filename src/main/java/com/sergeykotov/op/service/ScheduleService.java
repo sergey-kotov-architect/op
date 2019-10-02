@@ -25,29 +25,6 @@ public class ScheduleService {
         return opService.getAll().stream().filter(Op::isScheduled).collect(Collectors.toList());
     }
 
-    public String generate() {
-        log.info("extracting operations for generating a schedule...");
-        List<Op> ops = opService.getAll().stream().peek(o -> o.setScheduled(false)).collect(Collectors.toList());
-        log.info("op count: " + ops.size());
-
-        log.info("generating a schedule...");
-        long start = System.currentTimeMillis();
-        Stream<Op> scheduledOps = schedule(ops.stream());
-        long elapsed = System.currentTimeMillis() - start;
-        log.info("schedule has been generated");
-
-        log.info("saving " + scheduledOps.count() + " scheduled operations...");
-        boolean saved = opService.update(scheduledOps.collect(Collectors.toList()));
-        String result = saved ? "schedule has been generated" : "failed to generate a schedule";
-        String note = result + ", elapsed " + elapsed + " milliseconds";
-        if (saved) {
-            log.info(note);
-        } else {
-            log.error(note);
-        }
-        return note;
-    }
-
     public Metrics evaluateMetrics() {
         long start = System.currentTimeMillis();
         log.info("evaluating metrics...");
@@ -86,8 +63,32 @@ public class ScheduleService {
         return metrics;
     }
 
+    public String generate() {
+        log.info("extracting operations for generating a schedule...");
+        List<Op> ops = opService.getAll().stream().peek(o -> o.setScheduled(false)).collect(Collectors.toList());
+        log.info("op count: " + ops.size());
+
+        log.info("generating a schedule...");
+        long start = System.currentTimeMillis();
+        Stream<Op> scheduledOps = schedule(ops.stream());
+        long elapsed = System.currentTimeMillis() - start;
+        log.info("schedule has been generated");
+
+        log.info("saving " + scheduledOps.count() + " scheduled operations...");
+        boolean saved = opService.update(scheduledOps.collect(Collectors.toList()));
+        String result = saved ? "schedule has been generated" : "failed to generate a schedule";
+        String note = result + ", elapsed " + elapsed + " milliseconds";
+        if (saved) {
+            log.info(note);
+        } else {
+            log.error(note);
+        }
+        return note;
+    }
+
     private Stream<Op> schedule(Stream<Op> ops) {
         Stream<Stream<Op>> schedules = getSchedules(ops);
+        log.info("selecting an optimal schedule from " + schedules.count() + " possible ones");
         return getOptimalSchedule(schedules);
     }
 
