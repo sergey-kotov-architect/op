@@ -15,7 +15,16 @@ public class OpService {
         return false;
     }
 
+    public boolean create(List<Op> ops) {
+        log.info("creating operations " + ops);
+        return false;
+    }
+
     public List<Op> getAll() {
+        return null;
+    }
+
+    public List<Op> getScheduled() {
         return null;
     }
 
@@ -35,6 +44,11 @@ public class OpService {
 
     public boolean deleteById(long id) {
         log.info("deleting an operation by id " + id);
+        return false;
+    }
+
+    public boolean deleteUnscheduled() {
+        log.info("deleting unscheduled operations...");
         return false;
     }
 }

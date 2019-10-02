@@ -22,6 +22,11 @@ public class OpController {
         return opService.create(op);
     }
 
+    @PostMapping
+    public boolean create(@RequestBody List<Op> ops) {
+        return opService.create(ops);
+    }
+
     @GetMapping
     public List<Op> getAll() {
         return opService.getAll();
@@ -45,5 +50,10 @@ public class OpController {
     @DeleteMapping("/{id}")
     public boolean deleteById(@PathVariable long id) {
         return opService.deleteById(id);
+    }
+
+    @DeleteMapping
+    public boolean deleteUnscheduled() {
+        return opService.deleteUnscheduled();
     }
 }

@@ -1,6 +1,7 @@
 package com.sergeykotov.op.dao;
 
 import com.sergeykotov.op.domain.OpType;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,13 +10,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class OpTypeDao {
     private static final String CREATE_CMD = "insert into op_type (name, note) values (?, ?);";
     private static final String GET_CMD = "select o.id, o.name, o.note from op_type o;";
     private static final String UPDATE_CMD = "update op_type set name = ?, note = ? where id = ?";
     private static final String DELETE_CMD = "delete from op_type where id = ?";
 
-    public static boolean create(OpType opType) throws SQLException {
+    public boolean create(OpType opType) throws SQLException {
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(CREATE_CMD)) {
             preparedStatement.setString(1, opType.getName());
@@ -24,7 +26,7 @@ public class OpTypeDao {
         }
     }
 
-    public static List<OpType> getAll() throws SQLException {
+    public List<OpType> getAll() throws SQLException {
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_CMD);
              ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -40,7 +42,7 @@ public class OpTypeDao {
         }
     }
 
-    public static boolean update(OpType opType) throws SQLException {
+    public boolean update(OpType opType) throws SQLException {
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CMD)) {
             preparedStatement.setString(1, opType.getName());
@@ -50,7 +52,7 @@ public class OpTypeDao {
         }
     }
 
-    public static boolean deleteById(long id) throws SQLException {
+    public boolean deleteById(long id) throws SQLException {
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_CMD)) {
             preparedStatement.setLong(1, id);

@@ -22,7 +22,7 @@ public class ScheduleService {
     }
 
     public List<Op> get() {
-        return opService.getAll().stream().filter(Op::isScheduled).collect(Collectors.toList());
+        return opService.getScheduled();
     }
 
     public Metrics evaluateMetrics() {
