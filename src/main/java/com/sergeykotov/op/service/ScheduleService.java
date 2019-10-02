@@ -77,7 +77,7 @@ public class ScheduleService {
         log.info("schedule has been generated");
 
         log.info("saving " + scheduledOps.count() + " scheduled operations...");
-        boolean saved = opService.update(scheduledOps.collect(Collectors.toList()));
+        boolean saved = opService.update(scheduledOps.peek(o -> o.setScheduled(true)).collect(Collectors.toList()));
         String result = saved ? "schedule has been generated" : "failed to generate a schedule";
         String note = result + ", elapsed " + elapsed + " milliseconds";
         if (saved) {
@@ -117,12 +117,16 @@ public class ScheduleService {
         Set<LocalDate> dates = ops.map(Op::getDate).collect(Collectors.toSet());
         for (OpType opType : opTypes) {
             for (LocalDate date : dates) {
-                Stream<Op> opsForActor = ops.filter(o -> o.getOpType().equals(opType) && o.getDate().equals(date));
+                List<Op> opsForActor = ops
+                        .filter(o -> o.getOpType().equals(opType) && o.getDate().equals(date))
+                        .collect(Collectors.toList());
                 List<Stream<Op>> newSchedules = new ArrayList<>();
-                opsForActor.forEach(o ->
-                        schedules.forEach(s -> newSchedules.add(Stream.concat(s, Stream.of(o))))
-                );
-                schedules.addAll(newSchedules);
+                for (Op op : opsForActor) {
+                    for (Stream<Op> s : schedules) {
+                        newSchedules.add(Stream.concat(s, Stream.of(op)));
+                    }
+                }
+                schedules = newSchedules;
             }
         }
         return schedules.stream();
