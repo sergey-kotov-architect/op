@@ -8,6 +8,14 @@ generates an optimal schedule of operation and evaluates its metrics.
 * update a list of operations
 * create, get all, get by id, update, delete by id actor, operation type, operation
 
+### Optimisation
+It is assumed there is a constraint that only one actor may conduct a 
+given operation on a certain day. Therefore there is a problem to find a 
+uniform distribution of operations among actors.
+The optimisation process consists of finding all possible schedules and 
+selecting one with minimum mean deviation of operation count per actor 
+from its mean value.
+
 ### Database
 ![database diagram](src/main/resources/op-db-diagram.png)  
 [SQLite database schema](src/main/resources/schema.sql)  
@@ -17,14 +25,6 @@ of Spring Data or any other ORM framework.
 The system is intended to have only one user who modifies the data and 
 not a big number of readers, thus SQLite was selected as database 
 engine.
-
-### Optimisation
-It is assumed there is a constraint that only one actor may conduct a 
-given operation on a certain day. Therefore there is a problem to find a 
-uniform distribution of operations among actors.
-The optimisation process consists of finding all possible schedules and 
-selecting one with minimum mean deviation of operation count per actor 
-from its mean value.
 
 ### Technologies and tools
 * Java 8
@@ -49,3 +49,4 @@ from its mean value.
 * manage database backup
 * design UI, probably using React framework
 * provide performance benchmarks
+* validate input objects
