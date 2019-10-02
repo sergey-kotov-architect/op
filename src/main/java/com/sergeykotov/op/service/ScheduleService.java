@@ -5,6 +5,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -110,7 +112,19 @@ public class ScheduleService {
     }
 
     private Stream<Stream<Op>> getSchedules(Stream<Op> ops) {
-        //TODO: implement composing all possible schedules
-        return Stream.empty();
+        List<Stream<Op>> schedules = new ArrayList<>();
+        Set<OpType> opTypes = ops.map(Op::getOpType).collect(Collectors.toSet());
+        Set<LocalDate> dates = ops.map(Op::getDate).collect(Collectors.toSet());
+        for (OpType opType : opTypes) {
+            for (LocalDate date : dates) {
+                Stream<Op> opsForActor = ops.filter(o -> o.getOpType().equals(opType) && o.getDate().equals(date));
+                List<Stream<Op>> newSchedules = new ArrayList<>();
+                opsForActor.forEach(o ->
+                        schedules.forEach(s -> newSchedules.add(Stream.concat(s, Stream.of(o))))
+                );
+                schedules.addAll(newSchedules);
+            }
+        }
+        return schedules.stream();
     }
 }
