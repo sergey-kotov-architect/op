@@ -22,7 +22,7 @@ public class ActorDao {
              PreparedStatement preparedStatement = connection.prepareStatement(CREATE_CMD)) {
             preparedStatement.setString(1, actor.getName());
             preparedStatement.setString(2, actor.getNote());
-            return preparedStatement.execute();
+            return preparedStatement.executeUpdate() == 1;
         }
     }
 
@@ -48,7 +48,7 @@ public class ActorDao {
             preparedStatement.setString(1, actor.getName());
             preparedStatement.setString(2, actor.getNote());
             preparedStatement.setLong(3, actor.getId());
-            return preparedStatement.execute();
+            return preparedStatement.executeUpdate() == 1;
         }
     }
 
@@ -56,7 +56,7 @@ public class ActorDao {
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_CMD)) {
             preparedStatement.setLong(1, id);
-            return preparedStatement.execute();
+            return preparedStatement.executeUpdate() == 1;
         }
     }
 }

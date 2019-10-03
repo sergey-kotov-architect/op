@@ -22,7 +22,7 @@ public class OpTypeDao {
              PreparedStatement preparedStatement = connection.prepareStatement(CREATE_CMD)) {
             preparedStatement.setString(1, opType.getName());
             preparedStatement.setString(2, opType.getNote());
-            return preparedStatement.execute();
+            return preparedStatement.executeUpdate() == 1;
         }
     }
 
@@ -48,7 +48,7 @@ public class OpTypeDao {
             preparedStatement.setString(1, opType.getName());
             preparedStatement.setString(2, opType.getNote());
             preparedStatement.setLong(3, opType.getId());
-            return preparedStatement.execute();
+            return preparedStatement.executeUpdate() == 1;
         }
     }
 
@@ -56,7 +56,7 @@ public class OpTypeDao {
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_CMD)) {
             preparedStatement.setLong(1, id);
-            return preparedStatement.execute();
+            return preparedStatement.executeUpdate() == 1;
         }
     }
 }

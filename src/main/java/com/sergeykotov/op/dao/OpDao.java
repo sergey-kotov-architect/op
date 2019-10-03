@@ -34,7 +34,7 @@ public class OpDao {
             preparedStatement.setLong(4, op.getOpType().getId());
             preparedStatement.setTimestamp(5, Timestamp.valueOf(op.getDate().toString()));
             preparedStatement.setInt(6, op.isScheduled() ? 1 : 0);
-            return preparedStatement.execute();
+            return preparedStatement.executeUpdate() == 1;
         }
     }
 
@@ -126,7 +126,7 @@ public class OpDao {
             preparedStatement.setTimestamp(5, Timestamp.valueOf(op.getDate().toString()));
             preparedStatement.setInt(6, op.isScheduled() ? 1 : 0);
             preparedStatement.setLong(7, op.getId());
-            return preparedStatement.execute();
+            return preparedStatement.executeUpdate() == 1;
         }
     }
 
@@ -151,14 +151,14 @@ public class OpDao {
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_CMD)) {
             preparedStatement.setLong(1, id);
-            return preparedStatement.execute();
+            return preparedStatement.executeUpdate() == 1;
         }
     }
 
-    public boolean deleteUnscheduled() throws SQLException {
+    public int deleteUnscheduled() throws SQLException {
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_UNSCHEDULED_CMD)) {
-            return preparedStatement.execute();
+            return preparedStatement.executeUpdate();
         }
     }
 }

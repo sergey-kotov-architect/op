@@ -123,19 +123,15 @@ public class OpService {
         return true;
     }
 
-    public boolean deleteUnscheduled() {
+    public String deleteUnscheduled() {
         log.info("deleting unscheduled operations...");
-        boolean deleted;
+        int count;
         try {
-            deleted = opDao.deleteUnscheduled();
+            count = opDao.deleteUnscheduled();
         } catch (SQLException e) {
             log.error("failed to delete unscheduled operations", e);
             throw new InvalidDataException();
         }
-        if (!deleted) {
-            log.error("failed to delete unscheduled operations");
-            throw new InvalidDataException();
-        }
-        return true;
+        return count + " unscheduled operations have been deleted";
     }
 }

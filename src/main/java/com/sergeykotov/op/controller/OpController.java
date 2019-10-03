@@ -53,7 +53,7 @@ public class OpController {
     }
 
     @DeleteMapping
-    public boolean deleteUnscheduled() {
+    public String deleteUnscheduled() {
         return opService.deleteUnscheduled();
     }
 }
