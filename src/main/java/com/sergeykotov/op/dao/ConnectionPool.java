@@ -9,7 +9,7 @@ public class ConnectionPool {
     private static final BasicDataSource dataSource = new BasicDataSource();
 
     static {
-        dataSource.setUrl("jdbc:sqlite:src/main/resources/schedule.sqlite");
+        dataSource.setUrl("jdbc:sqlite:src/main/resources/op.sqlite");
         dataSource.setMinIdle(1);
         dataSource.setMaxIdle(5);
         dataSource.setMaxTotal(500);
