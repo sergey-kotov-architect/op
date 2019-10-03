@@ -73,8 +73,8 @@ public class ScheduleService {
         log.info("schedule has been generated");
 
         log.info("saving " + scheduledOps.size() + " scheduled operations...");
-        List<Op> scheduled = scheduledOps.stream().peek(o -> o.setScheduled(true)).collect(Collectors.toList());
-        boolean saved = opService.update(scheduled);
+        scheduledOps.forEach(o -> o.setScheduled(true));
+        boolean saved = opService.update(ops);
         String result = saved ? "schedule has been generated" : "failed to generate a schedule";
         String note = result + ", elapsed " + elapsed + " milliseconds";
         if (saved) {
@@ -87,7 +87,6 @@ public class ScheduleService {
 
     private List<Op> schedule(List<Op> ops) {
         List<List<Op>> schedules = getSchedules(ops);
-        System.out.println("selecting an optimal schedule from " + schedules.size() + " possible ones");
         return getOptimalSchedule(schedules);
     }
 
