@@ -22,18 +22,19 @@ public class OpTypeService {
     }
 
     public boolean create(OpType opType) {
-        log.info("creating an operation type " + opType);
+        log.info("creating operation type... " + opType);
         boolean created;
         try {
             created = opTypeDao.create(opType);
         } catch (SQLException e) {
-            log.error("failed to create an operation type " + opType, e);
+            log.error("failed to create operation type " + opType, e);
             throw new InvalidDataException();
         }
         if (!created) {
-            log.error("failed to create an operation type " + opType);
+            log.error("failed to create operation type " + opType);
             throw new InvalidDataException();
         }
+        log.info("operation type has been created");
         return true;
     }
 
@@ -51,34 +52,36 @@ public class OpTypeService {
     }
 
     public boolean update(OpType opType) {
-        log.info("updating an operation type " + opType);
+        log.info("updating operation type... " + opType);
         boolean updated;
         try {
             updated = opTypeDao.update(opType);
         } catch (SQLException e) {
-            log.error("failed to update an operation type " + opType, e);
+            log.error("failed to update operation type " + opType, e);
             throw new InvalidDataException();
         }
         if (!updated) {
-            log.error("failed to update an operation type " + opType);
+            log.error("failed to update operation type " + opType);
             throw new InvalidDataException();
         }
+        log.info("operation type has been updated: " + opType);
         return true;
     }
 
     public boolean deleteById(long id) {
-        log.info("deleting an operation type by id " + id);
+        log.info("deleting operation type by id " + id + "...");
         boolean deleted;
         try {
             deleted = opTypeDao.deleteById(id);
         } catch (SQLException e) {
-            log.error("failed to delete an operation type by id " + id, e);
+            log.error("failed to delete operation type by id " + id, e);
             throw new InvalidDataException();
         }
         if (!deleted) {
-            log.error("failed to delete an operation type by id " + id);
+            log.error("failed to delete operation type by id " + id);
             throw new InvalidDataException();
         }
+        log.info("operation type has been deleted by id " + id);
         return true;
     }
 }

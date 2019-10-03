@@ -22,23 +22,24 @@ public class OpService {
     }
 
     public boolean create(Op op) {
-        log.info("creating an operation " + op);
+        log.info("creating operation... " + op);
         boolean created;
         try {
             created = opDao.create(op);
         } catch (SQLException e) {
-            log.error("failed to create an operation " + op, e);
+            log.error("failed to create operation " + op, e);
             throw new InvalidDataException();
         }
         if (!created) {
-            log.error("failed to create an operation " + op);
+            log.error("failed to create operation " + op);
             throw new InvalidDataException();
         }
+        log.info("operation has been created: " + op);
         return true;
     }
 
     public boolean create(List<Op> ops) {
-        log.info("creating operations " + ops);
+        log.info("creating operations... " + ops);
         boolean created;
         try {
             created = opDao.create(ops);
@@ -50,6 +51,7 @@ public class OpService {
             log.error("failed to create operations " + ops);
             throw new InvalidDataException();
         }
+        log.info("operations have been created: " + ops);
         return true;
     }
 
@@ -76,23 +78,24 @@ public class OpService {
     }
 
     public boolean update(Op op) {
-        log.info("updating an operation " + op);
+        log.info("updating operation... " + op);
         boolean updated;
         try {
             updated = opDao.update(op);
         } catch (SQLException e) {
-            log.error("failed to update an operation " + op, e);
+            log.error("failed to update operation " + op, e);
             throw new InvalidDataException();
         }
         if (!updated) {
-            log.error("failed to update an operation " + op);
+            log.error("failed to update operation " + op);
             throw new InvalidDataException();
         }
+        log.info("operation has been updated: " + op);
         return true;
     }
 
     public boolean update(List<Op> ops) {
-        log.info("updating operations " + ops);
+        log.info("updating operations... " + ops);
         boolean updated;
         try {
             updated = opDao.update(ops);
@@ -104,22 +107,24 @@ public class OpService {
             log.error("failed to update operations " + ops);
             throw new InvalidDataException();
         }
+        log.info("operations have been updated: " + ops);
         return true;
     }
 
     public boolean deleteById(long id) {
-        log.info("deleting an operation by id " + id);
+        log.info("deleting operation by id " + id + "...");
         boolean deleted;
         try {
             deleted = opDao.deleteById(id);
         } catch (SQLException e) {
-            log.error("failed to delete an operation by id " + id, e);
+            log.error("failed to delete operation by id " + id, e);
             throw new InvalidDataException();
         }
         if (!deleted) {
-            log.error("failed to delete an operation by id " + id);
+            log.error("failed to delete operation by id " + id);
             throw new InvalidDataException();
         }
+        log.info("operation has been deleted by id " + id);
         return true;
     }
 
@@ -132,6 +137,8 @@ public class OpService {
             log.error("failed to delete unscheduled operations", e);
             throw new InvalidDataException();
         }
-        return count + " unscheduled operations have been deleted";
+        String message = count + " unscheduled operations have been deleted";
+        log.info(message);
+        return message;
     }
 }

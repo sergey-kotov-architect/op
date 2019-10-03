@@ -22,18 +22,19 @@ public class ActorService {
     }
 
     public boolean create(Actor actor) {
-        log.info("creating an actor " + actor);
+        log.info("creating actor... " + actor);
         boolean created;
         try {
             created = actorDao.create(actor);
         } catch (SQLException e) {
-            log.error("failed to create an actor " + actor, e);
+            log.error("failed to create actor " + actor, e);
             throw new InvalidDataException();
         }
         if (!created) {
-            log.error("failed to create an actor " + actor);
+            log.error("failed to create actor " + actor);
             throw new InvalidDataException();
         }
+        log.info("actor has been created: " + actor);
         return true;
     }
 
@@ -51,34 +52,36 @@ public class ActorService {
     }
 
     public boolean update(Actor actor) {
-        log.info("updating an actor " + actor);
+        log.info("updating actor... " + actor);
         boolean updated;
         try {
             updated = actorDao.update(actor);
         } catch (SQLException e) {
-            log.error("failed to update an actor " + actor, e);
+            log.error("failed to update actor " + actor, e);
             throw new InvalidDataException();
         }
         if (!updated) {
-            log.error("failed to update an actor " + actor);
+            log.error("failed to update actor " + actor);
             throw new InvalidDataException();
         }
+        log.info("actor has been updated: " + actor);
         return true;
     }
 
     public boolean deleteById(long id) {
-        log.info("deleting an actor by id " + id);
+        log.info("deleting actor by id " + id + "...");
         boolean deleted;
         try {
             deleted = actorDao.deleteById(id);
         } catch (SQLException e) {
-            log.error("failed to delete an actor by id " + id, e);
+            log.error("failed to delete actor by id " + id, e);
             throw new InvalidDataException();
         }
         if (!deleted) {
-            log.error("failed to delete an actor by id " + id);
+            log.error("failed to delete actor by id " + id);
             throw new InvalidDataException();
         }
+        log.info("actor has been deleted by id " + id);
         return true;
     }
 }
