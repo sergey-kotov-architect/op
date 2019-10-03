@@ -17,6 +17,8 @@ The optimisation process consists of finding all possible schedules and
 selecting one with minimum mean deviation of operation count per actor 
 from its mean value.
 
+[Optimisation Service](src/main/java/com/sergeykotov/op/service/OptimisationService.java)
+
 ### Database
 ![database diagram](src/main/resources/op-db-diagram.png)  
 [SQLite database schema](src/main/resources/schema.sql)  
@@ -39,7 +41,8 @@ engine.
 * IntelliJ IDEA
 * Insomnia REST Client
 * SQLite Studio
-* REST API
+* VisualVM (Java profiler)
+* Apache JMeter
 
 ### Future improvements
 * add authentication and authorization layer, probably utilising Spring Security or simply BCrypt
@@ -51,3 +54,4 @@ engine.
 * design UI, probably using React framework
 * provide performance benchmarks
 * validate input objects
+* conduct profound static code analysis
