@@ -32,7 +32,7 @@ public class OpDao {
             preparedStatement.setString(2, op.getNote());
             preparedStatement.setLong(3, op.getActor().getId());
             preparedStatement.setLong(4, op.getOpType().getId());
-            preparedStatement.setTimestamp(5, Timestamp.valueOf(op.getDate().toString()));
+            preparedStatement.setTimestamp(5, Timestamp.valueOf(op.getDate().atStartOfDay()));
             preparedStatement.setInt(6, op.isScheduled() ? 1 : 0);
             return preparedStatement.executeUpdate() == 1;
         }
@@ -46,7 +46,7 @@ public class OpDao {
                 preparedStatement.setString(2, op.getNote());
                 preparedStatement.setLong(3, op.getActor().getId());
                 preparedStatement.setLong(4, op.getOpType().getId());
-                preparedStatement.setTimestamp(5, Timestamp.valueOf(op.getDate().toString()));
+                preparedStatement.setTimestamp(5, Timestamp.valueOf(op.getDate().atStartOfDay()));
                 preparedStatement.setInt(6, op.isScheduled() ? 1 : 0);
                 preparedStatement.addBatch();
             }
@@ -123,7 +123,7 @@ public class OpDao {
             preparedStatement.setString(2, op.getNote());
             preparedStatement.setLong(3, op.getActor().getId());
             preparedStatement.setLong(4, op.getOpType().getId());
-            preparedStatement.setTimestamp(5, Timestamp.valueOf(op.getDate().toString()));
+            preparedStatement.setTimestamp(5, Timestamp.valueOf(op.getDate().atStartOfDay()));
             preparedStatement.setInt(6, op.isScheduled() ? 1 : 0);
             preparedStatement.setLong(7, op.getId());
             return preparedStatement.executeUpdate() == 1;
@@ -138,7 +138,7 @@ public class OpDao {
                 preparedStatement.setString(2, op.getNote());
                 preparedStatement.setLong(3, op.getActor().getId());
                 preparedStatement.setLong(4, op.getOpType().getId());
-                preparedStatement.setTimestamp(5, Timestamp.valueOf(op.getDate().toString()));
+                preparedStatement.setTimestamp(5, Timestamp.valueOf(op.getDate().atStartOfDay()));
                 preparedStatement.setInt(6, op.isScheduled() ? 1 : 0);
                 preparedStatement.setLong(7, op.getId());
                 preparedStatement.addBatch();
