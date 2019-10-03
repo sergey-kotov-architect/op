@@ -47,11 +47,8 @@ engine.
 ### Future improvements
 * add authentication and authorization layer, probably utilising Spring Security or simply BCrypt
 * prevent too many requests per time unit
-* handle concurrent requests properly
 * devise an approximate, heuristic solution
 * apply a continuous integration tool to the repository
-* manage database backup
 * design UI, probably using React framework
 * provide performance benchmarks
-* validate input objects
 * conduct profound static code analysis
