@@ -119,10 +119,16 @@ public class ScheduleService {
                         .collect(Collectors.toList());
                 List<List<Op>> newSchedules = new ArrayList<>();
                 for (Op op : opsForActor) {
-                    for (List<Op> s : schedules) {
-                        List<Op> newSchedule = new ArrayList<>(s);
+                    if (schedules.isEmpty()) {
+                        List<Op> newSchedule = new ArrayList<>();
                         newSchedule.add(op);
                         newSchedules.add(newSchedule);
+                    } else {
+                        for (List<Op> s : schedules) {
+                            List<Op> newSchedule = new ArrayList<>(s);
+                            newSchedule.add(op);
+                            newSchedules.add(newSchedule);
+                        }
                     }
                 }
                 schedules = newSchedules;
