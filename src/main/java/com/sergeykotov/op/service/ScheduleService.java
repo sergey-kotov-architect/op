@@ -27,6 +27,10 @@ public class ScheduleService {
         return opService.getScheduled();
     }
 
+    public List<Op> getByActorId(long id) {
+        return get().stream().filter(o -> o.getActor().getId() == id).collect(Collectors.toList());
+    }
+
     public Metrics evaluateMetrics() {
         long start = System.currentTimeMillis();
         log.info("evaluating metrics...");
@@ -92,12 +96,12 @@ public class ScheduleService {
         scheduledOps.forEach(o -> o.setScheduled(true));
         boolean saved = opService.update(ops);
         String result = saved ? "schedule has been generated" : "failed to generate a schedule";
-        String note = result + ", elapsed " + elapsed + " milliseconds";
+        String message = result + ", elapsed " + elapsed + " milliseconds";
         if (saved) {
-            log.info(note);
+            log.info(message);
         } else {
-            log.error(note);
+            log.error(message);
         }
-        return note;
+        return message;
     }
 }
