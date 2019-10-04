@@ -13,6 +13,8 @@ import java.util.List;
 @Service
 public class ActorService {
     private static final Logger log = Logger.getLogger(ActorService.class);
+    private static final int MAX_NAME_LENGTH = 100;
+    private static final int MAX_NOTE_LENGTH = 4000;
 
     private final ActorDao actorDao;
 
@@ -22,6 +24,7 @@ public class ActorService {
     }
 
     public boolean create(Actor actor) {
+        validate(actor);
         log.info("creating actor... " + actor);
         boolean created;
         try {
@@ -52,6 +55,7 @@ public class ActorService {
     }
 
     public boolean update(Actor actor) {
+        validate(actor);
         log.info("updating actor... " + actor);
         boolean updated;
         try {
@@ -83,5 +87,19 @@ public class ActorService {
         }
         log.info("actor has been deleted by id " + id);
         return true;
+    }
+
+    private void validate(Actor actor) {
+        if (actor == null) {
+            throw new InvalidDataException();
+        }
+        String name = actor.getName();
+        if (name == null || name.isEmpty() || name.length() > MAX_NAME_LENGTH) {
+            throw new InvalidDataException();
+        }
+        String note = actor.getNote();
+        if (note != null && note.length() > MAX_NOTE_LENGTH) {
+            throw new InvalidDataException();
+        }
     }
 }

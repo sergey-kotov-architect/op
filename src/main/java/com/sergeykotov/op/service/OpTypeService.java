@@ -13,6 +13,8 @@ import java.util.List;
 @Service
 public class OpTypeService {
     private static final Logger log = Logger.getLogger(OpTypeService.class);
+    private static final int MAX_NAME_LENGTH = 100;
+    private static final int MAX_NOTE_LENGTH = 4000;
 
     private final OpTypeDao opTypeDao;
 
@@ -22,6 +24,7 @@ public class OpTypeService {
     }
 
     public boolean create(OpType opType) {
+        validate(opType);
         log.info("creating operation type... " + opType);
         boolean created;
         try {
@@ -52,6 +55,7 @@ public class OpTypeService {
     }
 
     public boolean update(OpType opType) {
+        validate(opType);
         log.info("updating operation type... " + opType);
         boolean updated;
         try {
@@ -83,5 +87,19 @@ public class OpTypeService {
         }
         log.info("operation type has been deleted by id " + id);
         return true;
+    }
+
+    private void validate(OpType opType) {
+        if (opType == null) {
+            throw new InvalidDataException();
+        }
+        String name = opType.getName();
+        if (name == null || name.isEmpty() || name.length() > MAX_NAME_LENGTH) {
+            throw new InvalidDataException();
+        }
+        String note = opType.getNote();
+        if (note != null && note.length() > MAX_NOTE_LENGTH) {
+            throw new InvalidDataException();
+        }
     }
 }

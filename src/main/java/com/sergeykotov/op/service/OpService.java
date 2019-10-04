@@ -9,10 +9,13 @@ import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.function.Predicate;
 
 @Service
 public class OpService {
     private static final Logger log = Logger.getLogger(OpService.class);
+    private static final int MAX_NAME_LENGTH = 100;
+    private static final int MAX_NOTE_LENGTH = 4000;
 
     private final OpDao opDao;
 
@@ -22,6 +25,7 @@ public class OpService {
     }
 
     public boolean create(Op op) {
+        validate(op);
         log.info("creating operation... " + op);
         boolean created;
         try {
@@ -39,6 +43,7 @@ public class OpService {
     }
 
     public boolean create(List<Op> ops) {
+        validate(ops);
         log.info("creating operations... " + ops);
         boolean created;
         try {
@@ -78,6 +83,7 @@ public class OpService {
     }
 
     public boolean update(Op op) {
+        validate(op);
         log.info("updating operation... " + op);
         boolean updated;
         try {
@@ -95,6 +101,7 @@ public class OpService {
     }
 
     public boolean update(List<Op> ops) {
+        validate(ops);
         log.info("updating operations... " + ops);
         boolean updated;
         try {
@@ -140,5 +147,49 @@ public class OpService {
         String message = count + " unscheduled operations have been deleted";
         log.info(message);
         return message;
+    }
+
+    private void validate(List<Op> ops) {
+        if (ops == null) {
+            throw new InvalidDataException();
+        }
+        ops.forEach(this::validate);
+    }
+
+    private void validate(Op op) {
+        if (op == null) {
+            throw new InvalidDataException();
+        }
+        String name = op.getName();
+        if (name == null || name.isEmpty() || name.length() > MAX_NAME_LENGTH) {
+            throw new InvalidDataException();
+        }
+        String note = op.getNote();
+        if (note != null && note.length() > MAX_NOTE_LENGTH) {
+            throw new InvalidDataException();
+        }
+        if (op.getActor() == null) {
+            throw new InvalidDataException();
+        }
+        if (op.getOpType() == null) {
+            throw new InvalidDataException();
+        }
+        if (op.getDate() == null) {
+            throw new InvalidDataException();
+        }
+        if (op.isScheduled()) {
+            List<Op> scheduledOps;
+            try {
+                scheduledOps = getScheduled();
+            } catch (Exception ignore) {
+                return;
+            }
+            Predicate<Op> p = s -> s.getActor().equals(op.getActor())
+                    && s.getOpType().equals(op.getOpType())
+                    && s.getDate().equals(op.getDate());
+            if (scheduledOps.stream().anyMatch(p)) {
+                throw new InvalidDataException();
+            }
+        }
     }
 }
