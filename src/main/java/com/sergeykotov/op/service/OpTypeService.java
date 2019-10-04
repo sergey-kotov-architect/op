@@ -4,6 +4,7 @@ import com.sergeykotov.op.dao.OpTypeDao;
 import com.sergeykotov.op.domain.OpType;
 import com.sergeykotov.op.exception.ExtractionException;
 import com.sergeykotov.op.exception.InvalidDataException;
+import com.sergeykotov.op.exception.ModificationException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,10 +24,12 @@ public class OpTypeService {
     private int MAX_NOTE_LENGTH;
 
     private final OpTypeDao opTypeDao;
+    private final ScheduleService scheduleService;
 
     @Autowired
-    public OpTypeService(OpTypeDao opTypeDao) {
+    public OpTypeService(OpTypeDao opTypeDao, ScheduleService scheduleService) {
         this.opTypeDao = opTypeDao;
+        this.scheduleService = scheduleService;
     }
 
     public boolean create(OpType opType) {
@@ -79,6 +82,9 @@ public class OpTypeService {
     }
 
     public boolean deleteById(long id) {
+        if (scheduleService.isGenerating()) {
+            throw new ModificationException();
+        }
         log.info("deleting operation type by id " + id + "...");
         boolean deleted;
         try {

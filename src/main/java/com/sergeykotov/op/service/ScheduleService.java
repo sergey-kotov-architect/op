@@ -23,6 +23,10 @@ public class ScheduleService {
         this.optimisationService = optimisationService;
     }
 
+    public boolean isGenerating() {
+        return generating.get();
+    }
+
     public List<Op> get() {
         return opService.getScheduled();
     }

@@ -4,6 +4,7 @@ import com.sergeykotov.op.dao.OpDao;
 import com.sergeykotov.op.domain.Op;
 import com.sergeykotov.op.exception.ExtractionException;
 import com.sergeykotov.op.exception.InvalidDataException;
+import com.sergeykotov.op.exception.ModificationException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,13 +24,18 @@ public class OpService {
     private int MAX_NOTE_LENGTH;
 
     private final OpDao opDao;
+    private final ScheduleService scheduleService;
 
     @Autowired
-    public OpService(OpDao opDao) {
+    public OpService(OpDao opDao, ScheduleService scheduleService) {
         this.opDao = opDao;
+        this.scheduleService = scheduleService;
     }
 
     public boolean create(Op op) {
+        if (scheduleService.isGenerating()) {
+            throw new ModificationException();
+        }
         validate(op);
         log.info("creating operation... " + op);
         boolean created;
@@ -48,6 +54,9 @@ public class OpService {
     }
 
     public boolean create(List<Op> ops) {
+        if (scheduleService.isGenerating()) {
+            throw new ModificationException();
+        }
         validate(ops);
         log.info("creating operations... " + ops);
         boolean created;
@@ -88,6 +97,9 @@ public class OpService {
     }
 
     public boolean update(Op op) {
+        if (scheduleService.isGenerating()) {
+            throw new ModificationException();
+        }
         validate(op);
         log.info("updating operation... " + op);
         boolean updated;
@@ -105,8 +117,15 @@ public class OpService {
         return true;
     }
 
-    public boolean update(List<Op> ops) {
+    public boolean updateByUser(List<Op> ops) {
+        if (scheduleService.isGenerating()) {
+            throw new ModificationException();
+        }
         validate(ops);
+        return update(ops);
+    }
+
+    public boolean update(List<Op> ops) {
         log.info("updating operations... " + ops);
         boolean updated;
         try {
@@ -124,6 +143,9 @@ public class OpService {
     }
 
     public boolean deleteById(long id) {
+        if (scheduleService.isGenerating()) {
+            throw new ModificationException();
+        }
         log.info("deleting operation by id " + id + "...");
         boolean deleted;
         try {
@@ -141,6 +163,9 @@ public class OpService {
     }
 
     public String deleteUnscheduled() {
+        if (scheduleService.isGenerating()) {
+            throw new ModificationException();
+        }
         log.info("deleting unscheduled operations...");
         int count;
         try {

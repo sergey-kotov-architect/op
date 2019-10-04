@@ -44,7 +44,7 @@ public class OpController {
 
     @PutMapping("/list")
     public void updateList(@RequestBody List<Op> ops) {
-        opService.update(ops);
+        opService.updateByUser(ops);
     }
 
     @DeleteMapping("/{id}")
