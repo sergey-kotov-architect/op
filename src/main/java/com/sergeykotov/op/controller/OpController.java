@@ -18,13 +18,13 @@ public class OpController {
     }
 
     @PostMapping
-    public boolean create(@RequestBody Op op) {
-        return opService.create(op);
+    public void create(@RequestBody Op op) {
+        opService.create(op);
     }
 
     @PostMapping("/list")
-    public boolean createList(@RequestBody List<Op> ops) {
-        return opService.create(ops);
+    public void createList(@RequestBody List<Op> ops) {
+        opService.create(ops);
     }
 
     @GetMapping
@@ -38,18 +38,18 @@ public class OpController {
     }
 
     @PutMapping
-    public boolean update(@RequestBody Op op) {
-        return opService.update(op);
+    public void update(@RequestBody Op op) {
+        opService.update(op);
     }
 
     @PutMapping("/list")
-    public boolean updateList(@RequestBody List<Op> ops) {
-        return opService.update(ops);
+    public void updateList(@RequestBody List<Op> ops) {
+        opService.update(ops);
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteById(@PathVariable long id) {
-        return opService.deleteById(id);
+    public void deleteById(@PathVariable long id) {
+        opService.deleteById(id);
     }
 
     @DeleteMapping

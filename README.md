@@ -1,5 +1,5 @@
 Information system of actors, operation types and operations,
-generates an optimal schedule of operation and evaluates its metrics.
+generates an optimal schedule of operations and evaluates its metrics.
 
 ### Functions
 * generate an optimal schedule of operations

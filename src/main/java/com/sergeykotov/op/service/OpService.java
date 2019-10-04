@@ -2,22 +2,25 @@ package com.sergeykotov.op.service;
 
 import com.sergeykotov.op.dao.OpDao;
 import com.sergeykotov.op.domain.Op;
+import com.sergeykotov.op.exception.ExtractionException;
 import com.sergeykotov.op.exception.InvalidDataException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class OpService {
     private static final Logger log = Logger.getLogger(OpService.class);
-    private static final int MAX_NAME_LENGTH = 100;
-    private static final int MAX_NOTE_LENGTH = 4000;
+
+    @Value("${op.max_name_length:255}")
+    private int MAX_NAME_LENGTH;
+
+    @Value("${op.max_note_length:4000}")
+    private int MAX_NOTE_LENGTH;
 
     private final OpDao opDao;
 
@@ -28,7 +31,6 @@ public class OpService {
 
     public boolean create(Op op) {
         validate(op);
-        validateUniqueness(op);
         log.info("creating operation... " + op);
         boolean created;
         try {
@@ -47,7 +49,6 @@ public class OpService {
 
     public boolean create(List<Op> ops) {
         validate(ops);
-        validateUniqueness(ops);
         log.info("creating operations... " + ops);
         boolean created;
         try {
@@ -69,7 +70,7 @@ public class OpService {
             return opDao.getAll();
         } catch (SQLException e) {
             log.error("failed to extract operations", e);
-            throw new InvalidDataException();
+            throw new ExtractionException();
         }
     }
 
@@ -78,7 +79,7 @@ public class OpService {
             return opDao.getScheduled();
         } catch (SQLException e) {
             log.error("failed to extract scheduled operations", e);
-            throw new InvalidDataException();
+            throw new ExtractionException();
         }
     }
 
@@ -88,7 +89,6 @@ public class OpService {
 
     public boolean update(Op op) {
         validate(op);
-        validateUniqueness(op);
         log.info("updating operation... " + op);
         boolean updated;
         try {
@@ -107,7 +107,6 @@ public class OpService {
 
     public boolean update(List<Op> ops) {
         validate(ops);
-        validateUniqueness(ops);
         log.info("updating operations... " + ops);
         boolean updated;
         try {
@@ -182,40 +181,6 @@ public class OpService {
         }
         if (op.getDate() == null) {
             throw new InvalidDataException();
-        }
-    }
-
-    private void validateUniqueness(Op op) {
-        if (op.isScheduled()) {
-            List<Op> scheduledOps;
-            try {
-                scheduledOps = getScheduled();
-            } catch (Exception ignore) {
-                return;
-            }
-            Predicate<Op> p = s -> s.getOpType().equals(op.getOpType()) && s.getDate().equals(op.getDate());
-            if (scheduledOps.stream().anyMatch(p)) {
-                throw new InvalidDataException();
-            }
-        }
-    }
-
-    private void validateUniqueness(List<Op> ops) {
-        for (Op op : ops) {
-            if (op.isScheduled()) {
-                List<Op> scheduledOps;
-                try {
-                    scheduledOps = getScheduled();
-                } catch (Exception ignore) {
-                    return;
-                }
-                Stream<Op> newScheduledOps = ops.stream().filter(Op::isScheduled).filter(o -> !o.equals(op));
-                scheduledOps.addAll(newScheduledOps.collect(Collectors.toList()));
-                Predicate<Op> p = s -> s.getOpType().equals(op.getOpType()) && s.getDate().equals(op.getDate());
-                if (scheduledOps.stream().anyMatch(p)) {
-                    throw new InvalidDataException();
-                }
-            }
         }
     }
 }

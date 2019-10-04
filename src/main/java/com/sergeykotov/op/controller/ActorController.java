@@ -18,8 +18,8 @@ public class ActorController {
     }
 
     @PostMapping
-    public boolean create(@RequestBody Actor actor) {
-        return actorService.create(actor);
+    public void create(@RequestBody Actor actor) {
+        actorService.create(actor);
     }
 
     @GetMapping
@@ -33,12 +33,12 @@ public class ActorController {
     }
 
     @PutMapping
-    public boolean update(@RequestBody Actor actor) {
-        return actorService.update(actor);
+    public void update(@RequestBody Actor actor) {
+        actorService.update(actor);
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteById(@PathVariable long id) {
-        return actorService.deleteById(id);
+    public void deleteById(@PathVariable long id) {
+        actorService.deleteById(id);
     }
 }

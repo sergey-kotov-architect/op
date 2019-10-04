@@ -2,9 +2,11 @@ package com.sergeykotov.op.service;
 
 import com.sergeykotov.op.dao.ActorDao;
 import com.sergeykotov.op.domain.Actor;
+import com.sergeykotov.op.exception.ExtractionException;
 import com.sergeykotov.op.exception.InvalidDataException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -13,8 +15,12 @@ import java.util.List;
 @Service
 public class ActorService {
     private static final Logger log = Logger.getLogger(ActorService.class);
-    private static final int MAX_NAME_LENGTH = 100;
-    private static final int MAX_NOTE_LENGTH = 4000;
+
+    @Value("${actor.max_name_length:100}")
+    private int MAX_NAME_LENGTH;
+
+    @Value("${actor.max_note_length:4000}")
+    private int MAX_NOTE_LENGTH;
 
     private final ActorDao actorDao;
 
@@ -46,7 +52,7 @@ public class ActorService {
             return actorDao.getAll();
         } catch (SQLException e) {
             log.error("failed to extract actors", e);
-            throw new InvalidDataException();
+            throw new ExtractionException();
         }
     }
 

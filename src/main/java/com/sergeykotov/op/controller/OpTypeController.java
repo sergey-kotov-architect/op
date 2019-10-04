@@ -18,8 +18,8 @@ public class OpTypeController {
     }
 
     @PostMapping
-    public boolean create(@RequestBody OpType opType) {
-        return opTypeService.create(opType);
+    public void create(@RequestBody OpType opType) {
+        opTypeService.create(opType);
     }
 
     @GetMapping
@@ -33,12 +33,12 @@ public class OpTypeController {
     }
 
     @PutMapping
-    public boolean update(@RequestBody OpType opType) {
-        return opTypeService.update(opType);
+    public void update(@RequestBody OpType opType) {
+        opTypeService.update(opType);
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteById(@PathVariable long id) {
-        return opTypeService.deleteById(id);
+    public void deleteById(@PathVariable long id) {
+        opTypeService.deleteById(id);
     }
 }

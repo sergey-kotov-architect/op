@@ -2,9 +2,11 @@ package com.sergeykotov.op.service;
 
 import com.sergeykotov.op.dao.OpTypeDao;
 import com.sergeykotov.op.domain.OpType;
+import com.sergeykotov.op.exception.ExtractionException;
 import com.sergeykotov.op.exception.InvalidDataException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -13,8 +15,12 @@ import java.util.List;
 @Service
 public class OpTypeService {
     private static final Logger log = Logger.getLogger(OpTypeService.class);
-    private static final int MAX_NAME_LENGTH = 100;
-    private static final int MAX_NOTE_LENGTH = 4000;
+
+    @Value("${op_type.max_name_length:100}")
+    private int MAX_NAME_LENGTH;
+
+    @Value("${op_type.max_note_length:4000}")
+    private int MAX_NOTE_LENGTH;
 
     private final OpTypeDao opTypeDao;
 
@@ -46,7 +52,7 @@ public class OpTypeService {
             return opTypeDao.getAll();
         } catch (SQLException e) {
             log.error("failed to extract operation types", e);
-            throw new InvalidDataException();
+            throw new ExtractionException();
         }
     }
 
