@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class OpService {
@@ -26,6 +28,7 @@ public class OpService {
 
     public boolean create(Op op) {
         validate(op);
+        validateUniqueness(op);
         log.info("creating operation... " + op);
         boolean created;
         try {
@@ -44,6 +47,7 @@ public class OpService {
 
     public boolean create(List<Op> ops) {
         validate(ops);
+        validateUniqueness(ops);
         log.info("creating operations... " + ops);
         boolean created;
         try {
@@ -84,6 +88,7 @@ public class OpService {
 
     public boolean update(Op op) {
         validate(op);
+        validateUniqueness(op);
         log.info("updating operation... " + op);
         boolean updated;
         try {
@@ -102,6 +107,7 @@ public class OpService {
 
     public boolean update(List<Op> ops) {
         validate(ops);
+        validateUniqueness(ops);
         log.info("updating operations... " + ops);
         boolean updated;
         try {
@@ -177,6 +183,9 @@ public class OpService {
         if (op.getDate() == null) {
             throw new InvalidDataException();
         }
+    }
+
+    private void validateUniqueness(Op op) {
         if (op.isScheduled()) {
             List<Op> scheduledOps;
             try {
@@ -187,6 +196,25 @@ public class OpService {
             Predicate<Op> p = s -> s.getOpType().equals(op.getOpType()) && s.getDate().equals(op.getDate());
             if (scheduledOps.stream().anyMatch(p)) {
                 throw new InvalidDataException();
+            }
+        }
+    }
+
+    private void validateUniqueness(List<Op> ops) {
+        for (Op op : ops) {
+            if (op.isScheduled()) {
+                List<Op> scheduledOps;
+                try {
+                    scheduledOps = getScheduled();
+                } catch (Exception ignore) {
+                    return;
+                }
+                Stream<Op> newScheduledOps = ops.stream().filter(Op::isScheduled).filter(o -> !o.equals(op));
+                scheduledOps.addAll(newScheduledOps.collect(Collectors.toList()));
+                Predicate<Op> p = s -> s.getOpType().equals(op.getOpType()) && s.getDate().equals(op.getDate());
+                if (scheduledOps.stream().anyMatch(p)) {
+                    throw new InvalidDataException();
+                }
             }
         }
     }
