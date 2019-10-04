@@ -184,9 +184,7 @@ public class OpService {
             } catch (Exception ignore) {
                 return;
             }
-            Predicate<Op> p = s -> s.getActor().equals(op.getActor())
-                    && s.getOpType().equals(op.getOpType())
-                    && s.getDate().equals(op.getDate());
+            Predicate<Op> p = s -> s.getOpType().equals(op.getOpType()) && s.getDate().equals(op.getDate());
             if (scheduledOps.stream().anyMatch(p)) {
                 throw new InvalidDataException();
             }
