@@ -21,33 +21,17 @@ CREATE TABLE op (
   UNIQUE (actor_id, op_type_id, dt)
 );
 
-CREATE TRIGGER verify_op_insert
-  BEFORE INSERT
-  ON op
-  WHEN NEW.scheduled = 1
+CREATE TRIGGER verify_op_insert BEFORE INSERT ON op WHEN NEW.scheduled = 1
 BEGIN
-  SELECT CASE
-           WHEN EXISTS(SELECT 1
-                       FROM op o
-                       WHERE o.scheduled = 1
-                         AND o.op_type_id = NEW.op_type_id
-                         AND o.dt = NEW.dt)
-                   THEN RAISE(ABORT, "uniqueness violated")
-             END;
+  SELECT CASE WHEN EXISTS(SELECT 1 FROM op o WHERE o.scheduled = 1 AND o.op_type_id = NEW.op_type_id AND o.dt = NEW.dt)
+  THEN RAISE(ABORT, "uniqueness violated")
+  END;
 END;
 
-CREATE TRIGGER verify_op_update
-  BEFORE UPDATE
-  ON op
-  WHEN NEW.scheduled = 1
+CREATE TRIGGER verify_op_update BEFORE UPDATE ON op WHEN NEW.scheduled = 1
 BEGIN
-  SELECT CASE
-           WHEN EXISTS(SELECT 1
-                       FROM op o
-                       WHERE o.scheduled = 1
-                         AND o.op_type_id = NEW.op_type_id
-                         AND o.dt = NEW.dt
-                         AND o.id <> NEW.id)
-                   THEN RAISE(ABORT, "uniqueness violated") END;
-END;
+  SELECT CASE WHEN EXISTS
+      (SELECT 1 FROM op o WHERE o.scheduled = 1 AND o.op_type_id = NEW.op_type_id AND o.dt = NEW.dt AND o.id <> NEW.id)
+  THEN RAISE(ABORT, "uniqueness violated")
+  END;
 END;
