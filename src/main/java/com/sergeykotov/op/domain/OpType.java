@@ -1,10 +1,19 @@
 package com.sergeykotov.op.domain;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 public class OpType {
+    @Min(1)
     private long id;
+
+    @Size(max = 255)
+    @NotEmpty
     private String name;
+
+    @Size(max = 4000)
     private String note;
 
     public OpType() {
@@ -39,12 +48,12 @@ public class OpType {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OpType opType = (OpType) o;
-        return getId() == opType.getId();
+        return Objects.equals(getName(), opType.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return Objects.hash(getName());
     }
 
     @Override

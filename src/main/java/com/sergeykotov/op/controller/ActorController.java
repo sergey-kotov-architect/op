@@ -5,6 +5,7 @@ import com.sergeykotov.op.service.ActorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -18,7 +19,7 @@ public class ActorController {
     }
 
     @PostMapping
-    public void create(@RequestBody Actor actor) {
+    public void create(@RequestBody @Valid Actor actor) {
         actorService.create(actor);
     }
 
@@ -33,7 +34,7 @@ public class ActorController {
     }
 
     @PutMapping
-    public void update(@RequestBody Actor actor) {
+    public void update(@RequestBody @Valid Actor actor) {
         actorService.update(actor);
     }
 

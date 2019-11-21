@@ -5,6 +5,7 @@ import com.sergeykotov.op.service.OpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -18,12 +19,12 @@ public class OpController {
     }
 
     @PostMapping
-    public void create(@RequestBody Op op) {
+    public void create(@RequestBody @Valid Op op) {
         opService.create(op);
     }
 
     @PostMapping("/list")
-    public void createList(@RequestBody List<Op> ops) {
+    public void createList(@RequestBody @Valid List<Op> ops) {
         opService.create(ops);
     }
 
@@ -38,12 +39,12 @@ public class OpController {
     }
 
     @PutMapping
-    public void update(@RequestBody Op op) {
+    public void update(@RequestBody @Valid Op op) {
         opService.update(op);
     }
 
     @PutMapping("/list")
-    public void updateList(@RequestBody List<Op> ops) {
+    public void updateList(@RequestBody @Valid List<Op> ops) {
         opService.updateByUser(ops);
     }
 

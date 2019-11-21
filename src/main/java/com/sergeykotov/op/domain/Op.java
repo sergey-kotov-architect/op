@@ -1,15 +1,34 @@
 package com.sergeykotov.op.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Objects;
 
 public class Op {
+    @Min(1)
     private long id;
+
+    @Size(max = 255)
+    @NotEmpty
     private String name;
+
+    @Size(max = 4000)
     private String note;
+
+    @NotNull
     private Actor actor;
+
+    @NotNull
     private OpType opType;
+
+    @NotNull
     private LocalDate date;
+
     private boolean scheduled;
 
     public Op() {
@@ -47,6 +66,7 @@ public class Op {
         this.actor = actor;
     }
 
+    @JsonProperty("op_type")
     public OpType getOpType() {
         return opType;
     }
@@ -76,12 +96,14 @@ public class Op {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Op op = (Op) o;
-        return getId() == op.getId();
+        return Objects.equals(getActor(), op.getActor()) &&
+                Objects.equals(getOpType(), op.getOpType()) &&
+                Objects.equals(getDate(), op.getDate());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return Objects.hash(getActor(), getOpType(), getDate());
     }
 
     @Override

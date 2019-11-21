@@ -1,5 +1,7 @@
 package com.sergeykotov.op.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ActorMetrics {
     private long opCount;
     private double opCountDeviation;
@@ -7,6 +9,7 @@ public class ActorMetrics {
     public ActorMetrics() {
     }
 
+    @JsonProperty("op_count")
     public long getOpCount() {
         return opCount;
     }
@@ -15,6 +18,7 @@ public class ActorMetrics {
         this.opCount = opCount;
     }
 
+    @JsonProperty("op_count_deviation")
     public double getOpCountDeviation() {
         return opCountDeviation;
     }

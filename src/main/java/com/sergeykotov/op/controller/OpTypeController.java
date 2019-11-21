@@ -5,6 +5,7 @@ import com.sergeykotov.op.service.OpTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -18,7 +19,7 @@ public class OpTypeController {
     }
 
     @PostMapping
-    public void create(@RequestBody OpType opType) {
+    public void create(@RequestBody @Valid OpType opType) {
         opTypeService.create(opType);
     }
 
@@ -33,7 +34,7 @@ public class OpTypeController {
     }
 
     @PutMapping
-    public void update(@RequestBody OpType opType) {
+    public void update(@RequestBody @Valid OpType opType) {
         opTypeService.update(opType);
     }
 

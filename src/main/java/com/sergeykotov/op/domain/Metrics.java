@@ -1,5 +1,7 @@
 package com.sergeykotov.op.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +17,7 @@ public class Metrics {
     public Metrics() {
     }
 
+    @JsonProperty("op_type_count")
     public int getOpTypeCount() {
         return opTypeCount;
     }
@@ -23,6 +26,7 @@ public class Metrics {
         this.opTypeCount = opTypeCount;
     }
 
+    @JsonProperty("actor_count")
     public int getActorCount() {
         return actorCount;
     }
@@ -31,6 +35,7 @@ public class Metrics {
         this.actorCount = actorCount;
     }
 
+    @JsonProperty("op_count")
     public int getOpCount() {
         return opCount;
     }
@@ -39,6 +44,7 @@ public class Metrics {
         this.opCount = opCount;
     }
 
+    @JsonProperty("mean_op_count_per_actor")
     public double getMeanOpCountPerActor() {
         return meanOpCountPerActor;
     }
@@ -47,6 +53,7 @@ public class Metrics {
         this.meanOpCountPerActor = meanOpCountPerActor;
     }
 
+    @JsonProperty("mean_op_count_deviation")
     public double getMeanOpCountDeviation() {
         return meanOpCountDeviation;
     }
@@ -55,6 +62,7 @@ public class Metrics {
         this.meanOpCountDeviation = meanOpCountDeviation;
     }
 
+    @JsonProperty("actor_metrics_map")
     public Map<Actor, ActorMetrics> getActorMetricsMap() {
         return actorMetricsMap;
     }
