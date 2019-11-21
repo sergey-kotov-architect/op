@@ -35,7 +35,7 @@ engine.
 * SQLite
 * JDBC
 * Apache DBCP (connection pooling framework)
-* Spring framework (Boot, Web/MVC, Test)
+* Spring framework (Boot, Web/MVC, Test, Actuator)
 * Apache log4j
 * Maven
 * Git
