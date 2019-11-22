@@ -5,9 +5,9 @@ import com.sergeykotov.op.domain.OpType;
 import com.sergeykotov.op.exception.ExtractionException;
 import com.sergeykotov.op.exception.InvalidDataException;
 import com.sergeykotov.op.exception.ModificationException;
+import com.sergeykotov.op.exception.NotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -16,12 +16,6 @@ import java.util.List;
 @Service
 public class OpTypeService {
     private static final Logger log = Logger.getLogger(OpTypeService.class);
-
-    @Value("${op_type.max_name_length:100}")
-    private int MAX_NAME_LENGTH;
-
-    @Value("${op_type.max_note_length:4000}")
-    private int MAX_NOTE_LENGTH;
 
     private final OpTypeDao opTypeDao;
     private final ScheduleService scheduleService;
@@ -33,7 +27,6 @@ public class OpTypeService {
     }
 
     public boolean create(OpType opType) {
-        validate(opType);
         log.info("creating operation type... " + opType);
         boolean created;
         try {
@@ -60,11 +53,10 @@ public class OpTypeService {
     }
 
     public OpType getById(long id) {
-        return getAll().stream().filter(o -> o.getId() == id).findAny().orElseThrow(InvalidDataException::new);
+        return getAll().stream().filter(o -> o.getId() == id).findAny().orElseThrow(NotFoundException::new);
     }
 
     public boolean update(OpType opType) {
-        validate(opType);
         log.info("updating operation type... " + opType);
         boolean updated;
         try {
@@ -99,19 +91,5 @@ public class OpTypeService {
         }
         log.info("operation type has been deleted by id " + id);
         return true;
-    }
-
-    private void validate(OpType opType) {
-        if (opType == null) {
-            throw new InvalidDataException();
-        }
-        String name = opType.getName();
-        if (name == null || name.isEmpty() || name.length() > MAX_NAME_LENGTH) {
-            throw new InvalidDataException();
-        }
-        String note = opType.getNote();
-        if (note != null && note.length() > MAX_NOTE_LENGTH) {
-            throw new InvalidDataException();
-        }
     }
 }

@@ -5,9 +5,9 @@ import com.sergeykotov.op.domain.Op;
 import com.sergeykotov.op.exception.ExtractionException;
 import com.sergeykotov.op.exception.InvalidDataException;
 import com.sergeykotov.op.exception.ModificationException;
+import com.sergeykotov.op.exception.NotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -16,12 +16,6 @@ import java.util.List;
 @Service
 public class OpService {
     private static final Logger log = Logger.getLogger(OpService.class);
-
-    @Value("${op.max_name_length:255}")
-    private int MAX_NAME_LENGTH;
-
-    @Value("${op.max_note_length:4000}")
-    private int MAX_NOTE_LENGTH;
 
     private final OpDao opDao;
     private final ScheduleService scheduleService;
@@ -36,7 +30,6 @@ public class OpService {
         if (scheduleService.isGenerating()) {
             throw new ModificationException();
         }
-        validate(op);
         log.info("creating operation... " + op);
         boolean created;
         try {
@@ -57,7 +50,6 @@ public class OpService {
         if (scheduleService.isGenerating()) {
             throw new ModificationException();
         }
-        validate(ops);
         log.info("creating operations... " + ops);
         boolean created;
         try {
@@ -93,14 +85,13 @@ public class OpService {
     }
 
     public Op getById(long id) {
-        return getAll().stream().filter(o -> o.getId() == id).findAny().orElseThrow(InvalidDataException::new);
+        return getAll().stream().filter(o -> o.getId() == id).findAny().orElseThrow(NotFoundException::new);
     }
 
     public boolean update(Op op) {
         if (scheduleService.isGenerating()) {
             throw new ModificationException();
         }
-        validate(op);
         log.info("updating operation... " + op);
         boolean updated;
         try {
@@ -121,7 +112,6 @@ public class OpService {
         if (scheduleService.isGenerating()) {
             throw new ModificationException();
         }
-        validate(ops);
         return update(ops);
     }
 
@@ -177,35 +167,5 @@ public class OpService {
         String message = count + " unscheduled operations have been deleted";
         log.info(message);
         return message;
-    }
-
-    private void validate(List<Op> ops) {
-        if (ops == null) {
-            throw new InvalidDataException();
-        }
-        ops.forEach(this::validate);
-    }
-
-    private void validate(Op op) {
-        if (op == null) {
-            throw new InvalidDataException();
-        }
-        String name = op.getName();
-        if (name == null || name.isEmpty() || name.length() > MAX_NAME_LENGTH) {
-            throw new InvalidDataException();
-        }
-        String note = op.getNote();
-        if (note != null && note.length() > MAX_NOTE_LENGTH) {
-            throw new InvalidDataException();
-        }
-        if (op.getActor() == null) {
-            throw new InvalidDataException();
-        }
-        if (op.getOpType() == null) {
-            throw new InvalidDataException();
-        }
-        if (op.getDate() == null) {
-            throw new InvalidDataException();
-        }
     }
 }
