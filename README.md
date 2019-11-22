@@ -46,10 +46,7 @@ engine.
 * Apache JMeter
 
 ### Future improvements
-* add authentication and authorization layer, probably utilising Spring Security or simply BCrypt
-* prevent too many requests per time unit
 * devise an approximate, heuristic solution
-* apply a continuous integration tool to the repository
 * design UI, probably using React framework
 * provide performance benchmarks
 * conduct profound static code analysis
