@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 public class ScheduleService {
     private static final Logger log = Logger.getLogger(ScheduleService.class);
     private static final AtomicBoolean generating = new AtomicBoolean();
+
     private final OpService opService;
     private final OptimisationService optimisationService;
 
