@@ -1,6 +1,7 @@
-package com.sergeykotov.op.domain;
+package com.sergeykotov.op.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sergeykotov.op.domain.Actor;
 
 import java.util.HashMap;
 import java.util.Map;

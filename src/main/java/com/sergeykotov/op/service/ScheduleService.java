@@ -1,6 +1,11 @@
 package com.sergeykotov.op.service;
 
-import com.sergeykotov.op.domain.*;
+import com.sergeykotov.op.domain.Actor;
+import com.sergeykotov.op.domain.Op;
+import com.sergeykotov.op.domain.OpType;
+import com.sergeykotov.op.dto.ActorMetrics;
+import com.sergeykotov.op.dto.GenerationResult;
+import com.sergeykotov.op.dto.Metrics;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

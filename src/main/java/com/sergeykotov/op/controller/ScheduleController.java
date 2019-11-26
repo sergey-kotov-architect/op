@@ -1,8 +1,8 @@
 package com.sergeykotov.op.controller;
 
-import com.sergeykotov.op.domain.GenerationResult;
-import com.sergeykotov.op.domain.Metrics;
 import com.sergeykotov.op.domain.Op;
+import com.sergeykotov.op.dto.GenerationResult;
+import com.sergeykotov.op.dto.Metrics;
 import com.sergeykotov.op.service.AuthorizationService;
 import com.sergeykotov.op.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
