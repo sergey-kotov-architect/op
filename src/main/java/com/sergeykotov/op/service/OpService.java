@@ -2,10 +2,7 @@ package com.sergeykotov.op.service;
 
 import com.sergeykotov.op.dao.OpDao;
 import com.sergeykotov.op.domain.Op;
-import com.sergeykotov.op.exception.ExtractionException;
-import com.sergeykotov.op.exception.InvalidDataException;
-import com.sergeykotov.op.exception.ModificationException;
-import com.sergeykotov.op.exception.NotFoundException;
+import com.sergeykotov.op.exception.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -162,7 +159,7 @@ public class OpService {
             count = opDao.deleteUnscheduled();
         } catch (SQLException e) {
             log.error("failed to delete unscheduled operations, error code: " + e.getErrorCode(), e);
-            throw new InvalidDataException();
+            throw new DatabaseException();
         }
         String message = count + " unscheduled operations have been deleted";
         log.info(message);
