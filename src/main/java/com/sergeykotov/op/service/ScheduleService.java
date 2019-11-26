@@ -122,6 +122,7 @@ public class ScheduleService {
         }
         GenerationResult generationResult = new GenerationResult();
         generationResult.setGenerated(saved);
+        generationResult.setElapsed(elapsed);
         generationResult.setNote(message);
         return generationResult;
     }
