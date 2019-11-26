@@ -74,9 +74,12 @@ public class ScheduleService {
         return metrics;
     }
 
-    public String generate() {
+    public GenerationResult generate() {
         if (generating.get()) {
-            return "schedule is being generating";
+            GenerationResult generationResult = new GenerationResult();
+            generationResult.setGenerated(false);
+            generationResult.setNote("schedule is being generating");
+            return generationResult;
         }
         generating.set(true);
         try {
@@ -86,7 +89,7 @@ public class ScheduleService {
         }
     }
 
-    private String generateSchedule() {
+    private GenerationResult generateSchedule() {
         log.info("extracting operations for generating a schedule...");
         List<Op> ops = opService.getAll().stream().peek(o -> o.setScheduled(false)).collect(Collectors.toList());
         log.info("op count: " + ops.size());
@@ -99,7 +102,12 @@ public class ScheduleService {
 
         log.info("saving " + scheduledOps.size() + " scheduled operations...");
         scheduledOps.forEach(o -> o.setScheduled(true));
-        boolean saved = opService.update(ops);
+        boolean saved;
+        try {
+            saved = opService.update(ops);
+        } catch (Exception e) {
+            saved = false;
+        }
         String result = saved ? "schedule has been generated" : "failed to generate a schedule";
         String message = result + ", elapsed " + elapsed + " milliseconds";
         if (saved) {
@@ -107,6 +115,9 @@ public class ScheduleService {
         } else {
             log.error(message);
         }
-        return message;
+        GenerationResult generationResult = new GenerationResult();
+        generationResult.setGenerated(saved);
+        generationResult.setNote(message);
+        return generationResult;
     }
 }

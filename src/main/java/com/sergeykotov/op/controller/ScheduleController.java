@@ -1,5 +1,6 @@
 package com.sergeykotov.op.controller;
 
+import com.sergeykotov.op.domain.GenerationResult;
 import com.sergeykotov.op.domain.Metrics;
 import com.sergeykotov.op.domain.Op;
 import com.sergeykotov.op.service.AuthorizationService;
@@ -40,7 +41,7 @@ public class ScheduleController {
     }
 
     @PutMapping
-    public String generate(@RequestHeader String authorization) {
+    public GenerationResult generate(@RequestHeader String authorization) {
         authorizationService.authorize(authorization);
         return scheduleService.generate();
     }
