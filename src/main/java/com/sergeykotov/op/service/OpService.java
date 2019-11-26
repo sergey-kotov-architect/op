@@ -35,7 +35,7 @@ public class OpService {
         try {
             created = opDao.create(op);
         } catch (SQLException e) {
-            log.error("failed to create operation " + op, e);
+            log.error("failed to create operation " + op + ", error code: " + e.getErrorCode(), e);
             throw new InvalidDataException();
         }
         if (!created) {
@@ -55,7 +55,7 @@ public class OpService {
         try {
             created = opDao.create(ops);
         } catch (SQLException e) {
-            log.error("failed to create operations " + ops, e);
+            log.error("failed to create operations " + ops + ", error code: " + e.getErrorCode(), e);
             throw new InvalidDataException();
         }
         if (!created) {
@@ -70,7 +70,7 @@ public class OpService {
         try {
             return opDao.getAll();
         } catch (SQLException e) {
-            log.error("failed to extract operations", e);
+            log.error("failed to extract operations, error code: " + e.getErrorCode(), e);
             throw new ExtractionException();
         }
     }
@@ -79,7 +79,7 @@ public class OpService {
         try {
             return opDao.getScheduled();
         } catch (SQLException e) {
-            log.error("failed to extract scheduled operations", e);
+            log.error("failed to extract scheduled operations, error code: " + e.getErrorCode(), e);
             throw new ExtractionException();
         }
     }
@@ -97,7 +97,7 @@ public class OpService {
         try {
             updated = opDao.update(op);
         } catch (SQLException e) {
-            log.error("failed to update operation " + op, e);
+            log.error("failed to update operation " + op + ", error code: " + e.getErrorCode(), e);
             throw new InvalidDataException();
         }
         if (!updated) {
@@ -121,7 +121,7 @@ public class OpService {
         try {
             updated = opDao.update(ops);
         } catch (SQLException e) {
-            log.error("failed to update operations " + ops, e);
+            log.error("failed to update operations " + ops + ", error code: " + e.getErrorCode(), e);
             throw new InvalidDataException();
         }
         if (!updated) {
@@ -141,7 +141,7 @@ public class OpService {
         try {
             deleted = opDao.deleteById(id);
         } catch (SQLException e) {
-            log.error("failed to delete operation by id " + id, e);
+            log.error("failed to delete operation by id " + id + ", error code: " + e.getErrorCode(), e);
             throw new InvalidDataException();
         }
         if (!deleted) {
@@ -161,7 +161,7 @@ public class OpService {
         try {
             count = opDao.deleteUnscheduled();
         } catch (SQLException e) {
-            log.error("failed to delete unscheduled operations", e);
+            log.error("failed to delete unscheduled operations, error code: " + e.getErrorCode(), e);
             throw new InvalidDataException();
         }
         String message = count + " unscheduled operations have been deleted";

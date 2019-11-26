@@ -32,7 +32,7 @@ public class OpTypeService {
         try {
             created = opTypeDao.create(opType);
         } catch (SQLException e) {
-            log.error("failed to create operation type " + opType, e);
+            log.error("failed to create operation type " + opType + ", error code: " + e.getErrorCode(), e);
             throw new InvalidDataException();
         }
         if (!created) {
@@ -47,7 +47,7 @@ public class OpTypeService {
         try {
             return opTypeDao.getAll();
         } catch (SQLException e) {
-            log.error("failed to extract operation types", e);
+            log.error("failed to extract operation types, error code: " + e.getErrorCode(), e);
             throw new ExtractionException();
         }
     }
@@ -62,7 +62,7 @@ public class OpTypeService {
         try {
             updated = opTypeDao.update(opType);
         } catch (SQLException e) {
-            log.error("failed to update operation type " + opType, e);
+            log.error("failed to update operation type " + opType + ", error code: " + e.getErrorCode(), e);
             throw new InvalidDataException();
         }
         if (!updated) {
@@ -82,7 +82,7 @@ public class OpTypeService {
         try {
             deleted = opTypeDao.deleteById(id);
         } catch (SQLException e) {
-            log.error("failed to delete operation type by id " + id, e);
+            log.error("failed to delete operation type by id " + id + ", error code: " + e.getErrorCode(), e);
             throw new InvalidDataException();
         }
         if (!deleted) {

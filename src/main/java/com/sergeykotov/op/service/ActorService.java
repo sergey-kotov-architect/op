@@ -32,7 +32,7 @@ public class ActorService {
         try {
             created = actorDao.create(actor);
         } catch (SQLException e) {
-            log.error("failed to create actor " + actor, e);
+            log.error("failed to create actor " + actor + ", error code: " + e.getErrorCode(), e);
             throw new InvalidDataException();
         }
         if (!created) {
@@ -47,7 +47,7 @@ public class ActorService {
         try {
             return actorDao.getAll();
         } catch (SQLException e) {
-            log.error("failed to extract actors", e);
+            log.error("failed to extract actors, error code: " + e.getErrorCode(), e);
             throw new ExtractionException();
         }
     }
@@ -62,7 +62,7 @@ public class ActorService {
         try {
             updated = actorDao.update(actor);
         } catch (SQLException e) {
-            log.error("failed to update actor " + actor, e);
+            log.error("failed to update actor " + actor + ", error code: " + e.getErrorCode(), e);
             throw new InvalidDataException();
         }
         if (!updated) {
@@ -82,7 +82,7 @@ public class ActorService {
         try {
             deleted = actorDao.deleteById(id);
         } catch (SQLException e) {
-            log.error("failed to delete actor by id " + id, e);
+            log.error("failed to delete actor by id " + id + ", error code: " + e.getErrorCode(), e);
             throw new InvalidDataException();
         }
         if (!deleted) {
