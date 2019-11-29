@@ -4,15 +4,17 @@ import com.sergeykotov.op.domain.Actor;
 import com.sergeykotov.op.domain.Op;
 import com.sergeykotov.op.domain.OpType;
 import com.sergeykotov.op.dto.ActorMetrics;
-import com.sergeykotov.op.dto.GenerationResult;
 import com.sergeykotov.op.dto.Metrics;
 import com.sergeykotov.op.exception.ModificationException;
+import com.sergeykotov.op.task.ScheduleGenerationTask;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -21,13 +23,15 @@ public class ScheduleService {
     private static final Logger log = Logger.getLogger(ScheduleService.class);
     public static final AtomicBoolean generating = new AtomicBoolean();
 
-    private final OpService opService;
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
     private final OptimisationService optimisationService;
+    private final OpService opService;
 
     @Autowired
-    public ScheduleService(OpService opService, OptimisationService optimisationService) {
-        this.opService = opService;
+    public ScheduleService(OptimisationService optimisationService, OpService opService) {
         this.optimisationService = optimisationService;
+        this.opService = opService;
     }
 
     public List<Op> get() {
@@ -80,44 +84,6 @@ public class ScheduleService {
         if (generating.get()) {
             throw new ModificationException();
         }
-        generating.set(true);
-        try {
-            generateSchedule();
-        } finally {
-            generating.set(false);
-        }
-    }
-
-    private GenerationResult generateSchedule() {
-        log.info("extracting operations for generating a schedule...");
-        List<Op> ops = opService.getAll().stream().peek(o -> o.setScheduled(false)).collect(Collectors.toList());
-        log.info("op count: " + ops.size());
-
-        log.info("generating a schedule...");
-        long start = System.currentTimeMillis();
-        List<Op> scheduledOps = optimisationService.optimise(ops);
-        long elapsed = System.currentTimeMillis() - start;
-        log.info("schedule has been generated");
-
-        log.info("saving " + scheduledOps.size() + " scheduled operations...");
-        scheduledOps.forEach(o -> o.setScheduled(true));
-        boolean saved = true;
-        try {
-            opService.update(ops);
-        } catch (Exception e) {
-            saved = false;
-        }
-        String result = saved ? "schedule has been generated" : "failed to generate a schedule";
-        String message = result + ", elapsed " + elapsed + " milliseconds";
-        if (saved) {
-            log.info(message);
-        } else {
-            log.error(message);
-        }
-        GenerationResult generationResult = new GenerationResult();
-        generationResult.setGenerated(saved);
-        generationResult.setElapsed(elapsed);
-        generationResult.setNote(message);
-        return generationResult;
+        executorService.submit(new ScheduleGenerationTask(optimisationService, opService));
     }
 }
