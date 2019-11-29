@@ -28,29 +28,22 @@ public class ScheduleGenerationTask extends Thread {
         try {
             log.info("extracting operations for generating a schedule...");
             List<Op> ops = opService.getAll().stream().peek(o -> o.setScheduled(false)).collect(Collectors.toList());
-            log.info("op count: " + ops.size());
+            log.info(ops.size() + " operations have been extracted");
 
-            log.info("generating a schedule...");
+            log.info("generating an optimal schedule...");
             long start = System.currentTimeMillis();
             List<Op> scheduledOps = optimisationService.optimise(ops);
             long elapsed = System.currentTimeMillis() - start;
-            log.info("schedule has been generated");
+            log.info("optimal schedule has been generated in " + elapsed + " milliseconds");
 
             log.info("saving " + scheduledOps.size() + " scheduled operations...");
             scheduledOps.forEach(o -> o.setScheduled(true));
-            boolean saved = true;
             try {
                 opService.update(ops);
             } catch (Exception e) {
-                saved = false;
+                log.error("failed to save generated schedule");
             }
-            String result = saved ? "schedule has been generated" : "failed to generate a schedule";
-            String message = result + ", elapsed " + elapsed + " milliseconds";
-            if (saved) {
-                log.info(message);
-            } else {
-                log.error(message);
-            }
+            log.info("schedule has been saved");
         } finally {
             ScheduleService.generating.set(false);
         }
