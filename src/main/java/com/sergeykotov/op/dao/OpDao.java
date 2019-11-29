@@ -155,6 +155,17 @@ public class OpDao {
         }
     }
 
+    public boolean deleteList(long[] ids) throws SQLException {
+        try (Connection connection = ConnectionPool.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_CMD)) {
+            for (long id : ids) {
+                preparedStatement.setLong(1, id);
+                preparedStatement.addBatch();
+            }
+            return Arrays.stream(preparedStatement.executeBatch()).sum() == ids.length;
+        }
+    }
+
     public int deleteUnscheduled() throws SQLException {
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_UNSCHEDULED_CMD)) {

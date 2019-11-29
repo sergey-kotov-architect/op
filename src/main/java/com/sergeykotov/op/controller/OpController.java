@@ -69,6 +69,13 @@ public class OpController {
         opService.deleteById(id);
     }
 
+    @DeleteMapping("/list")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteList(@RequestHeader String authorization, @RequestBody long[] ids) {
+        authorizationService.authorize(authorization);
+        opService.deleteList(ids);
+    }
+
     @DeleteMapping
     public String deleteUnscheduled(@RequestHeader String authorization) {
         authorizationService.authorize(authorization);

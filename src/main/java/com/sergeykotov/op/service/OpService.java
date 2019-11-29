@@ -196,6 +196,32 @@ public class OpService {
         log.info("operation has been deleted by ID " + id);
     }
 
+    public void deleteList(long[] ids) {
+        if (ScheduleService.generating.get()) {
+            throw new ModificationException();
+        }
+        log.info("deleting operations by IDs " + ids + "...");
+        boolean deleted;
+        try {
+            deleted = opDao.deleteList(ids);
+        } catch (SQLException e) {
+            if (e.getErrorCode() == ResultCode.SQLITE_CONSTRAINT.getCode()) {
+                String message = "failed to delete operations by IDs " + ids + " due to database constraints";
+                log.error(message, e);
+                throw new InvalidDataException(message, e);
+            }
+            String message = "failed to delete operations by IDs " + ids + ", error code: " + e.getErrorCode();
+            log.error(message, e);
+            throw new DatabaseException(message, e);
+        }
+        if (!deleted) {
+            String message = "failed to delete operations by ID " + ids;
+            log.error(message);
+            throw new InvalidDataException(message);
+        }
+        log.info("operations have been deleted by IDs " + ids);
+    }
+
     public String deleteUnscheduled() {
         if (ScheduleService.generating.get()) {
             throw new ModificationException();
