@@ -46,4 +46,10 @@ public class ScheduleController {
         authorizationService.authorize(authorization);
         scheduleService.generate();
     }
+
+    @GetMapping("/status")
+    public boolean getStatus(@RequestHeader String authorization) {
+        authorizationService.authorize(authorization);
+        return !ScheduleService.generating.get();
+    }
 }
