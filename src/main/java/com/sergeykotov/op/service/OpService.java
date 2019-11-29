@@ -26,7 +26,7 @@ public class OpService {
         if (ScheduleService.generating.get()) {
             throw new ModificationException();
         }
-        log.info("creating op " + op + "... ");
+        log.info("creating operation " + op + "... ");
         boolean created;
         try {
             created = opDao.create(op);
@@ -112,16 +112,16 @@ public class OpService {
         try {
             updated = opDao.updateById(id, op);
         } catch (SQLException e) {
-            String message = "failed to update operation by ID " + op + ", error code: " + e.getErrorCode();
+            String message = "failed to update operation by ID " + id + ", error code: " + e.getErrorCode();
             log.error(message, e);
             throw new InvalidDataException(message, e);
         }
         if (!updated) {
-            String message = "failed to update operation by ID " + op;
+            String message = "failed to update operation by ID " + id;
             log.error(message);
             throw new InvalidDataException(message);
         }
-        log.info("operation has been updated by ID " + op);
+        log.info("operation has been updated by ID " + id);
     }
 
     public void updateByUser(List<Op> ops) {
