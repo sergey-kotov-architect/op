@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -200,26 +201,27 @@ public class OpService {
         if (ScheduleService.generating.get()) {
             throw new ModificationException();
         }
-        log.info("deleting operations by IDs " + ids + "...");
+        String idList = Arrays.toString(ids);
+        log.info("deleting operations by IDs " + idList + "...");
         boolean deleted;
         try {
             deleted = opDao.deleteList(ids);
         } catch (SQLException e) {
             if (e.getErrorCode() == ResultCode.SQLITE_CONSTRAINT.getCode()) {
-                String message = "failed to delete operations by IDs " + ids + " due to database constraints";
+                String message = "failed to delete operations by IDs " + idList + " due to database constraints";
                 log.error(message, e);
                 throw new InvalidDataException(message, e);
             }
-            String message = "failed to delete operations by IDs " + ids + ", error code: " + e.getErrorCode();
+            String message = "failed to delete operations by IDs " + idList + ", error code: " + e.getErrorCode();
             log.error(message, e);
             throw new DatabaseException(message, e);
         }
         if (!deleted) {
-            String message = "failed to delete operations by ID " + ids;
+            String message = "failed to delete operations by ID " + idList;
             log.error(message);
             throw new InvalidDataException(message);
         }
-        log.info("operations have been deleted by IDs " + ids);
+        log.info("operations have been deleted by IDs " + idList);
     }
 
     public String deleteUnscheduled() {
