@@ -1,6 +1,7 @@
 package com.sergeykotov.op.service;
 
 import com.sergeykotov.op.dao.OpTypeDao;
+import com.sergeykotov.op.dao.ResultCode;
 import com.sergeykotov.op.domain.OpType;
 import com.sergeykotov.op.exception.*;
 import org.apache.log4j.Logger;
@@ -27,14 +28,19 @@ public class OpTypeService {
         try {
             created = opTypeDao.create(opType);
         } catch (SQLException e) {
+            if (e.getErrorCode() == ResultCode.SQLITE_CONSTRAINT.getCode()) {
+                String message = "failed to create operation type " + opType + " due to unique constraint";
+                log.error(message, e);
+                throw new InvalidDataException(message, e);
+            }
             String message = "failed to create operation type " + opType + ", error code: " + e.getErrorCode();
             log.error(message, e);
-            throw new InvalidDataException(message, e);
+            throw new DatabaseException(message, e);
         }
         if (!created) {
             String message = "failed to create operation type " + opType;
             log.error(message);
-            throw new InvalidDataException(message);
+            throw new DatabaseException(message);
         }
         log.info("operation type " + opType + " has been created");
         try {
@@ -68,6 +74,11 @@ public class OpTypeService {
         try {
             updated = opTypeDao.updateById(id, opType);
         } catch (SQLException e) {
+            if (e.getErrorCode() == ResultCode.SQLITE_CONSTRAINT.getCode()) {
+                String message = "failed to update operation type by ID " + id + " due to unique constraint";
+                log.error(message, e);
+                throw new InvalidDataException(message, e);
+            }
             String message = "failed to update operation type by ID " + id + ", error code: " + e.getErrorCode();
             log.error(message, e);
             throw new DatabaseException(message, e);
@@ -75,7 +86,7 @@ public class OpTypeService {
         if (!updated) {
             String message = "failed to update operation type by ID " + id;
             log.error(message);
-            throw new DatabaseException(message);
+            throw new InvalidDataException(message);
         }
         log.info("operation type has been updated by ID " + id);
     }
@@ -89,9 +100,14 @@ public class OpTypeService {
         try {
             deleted = opTypeDao.deleteById(id);
         } catch (SQLException e) {
+            if (e.getErrorCode() == ResultCode.SQLITE_CONSTRAINT.getCode()) {
+                String message = "failed to delete operation type by ID " + id + " due to database constraints";
+                log.error(message, e);
+                throw new InvalidDataException(message, e);
+            }
             String message = "failed to delete operation type by ID " + id + ", error code: " + e.getErrorCode();
             log.error(message, e);
-            throw new InvalidDataException(message, e);
+            throw new DatabaseException(message, e);
         }
         if (!deleted) {
             String message = "failed to delete operation type by ID " + id;

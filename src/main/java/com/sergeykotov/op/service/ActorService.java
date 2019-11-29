@@ -1,6 +1,7 @@
 package com.sergeykotov.op.service;
 
 import com.sergeykotov.op.dao.ActorDao;
+import com.sergeykotov.op.dao.ResultCode;
 import com.sergeykotov.op.domain.Actor;
 import com.sergeykotov.op.exception.*;
 import org.apache.log4j.Logger;
@@ -27,14 +28,19 @@ public class ActorService {
         try {
             created = actorDao.create(actor);
         } catch (SQLException e) {
+            if (e.getErrorCode() == ResultCode.SQLITE_CONSTRAINT.getCode()) {
+                String message = "failed to create actor " + actor + " due to unique constraint";
+                log.error(message, e);
+                throw new InvalidDataException(message, e);
+            }
             String message = "failed to create actor " + actor + ", error code: " + e.getErrorCode();
             log.error(message, e);
-            throw new InvalidDataException(message, e);
+            throw new DatabaseException(message, e);
         }
         if (!created) {
             String message = "failed to create actor " + actor;
             log.error(message);
-            throw new InvalidDataException(message);
+            throw new DatabaseException(message);
         }
         log.info("actor " + actor + " has been created");
         try {
@@ -68,6 +74,11 @@ public class ActorService {
         try {
             updated = actorDao.updateById(id, actor);
         } catch (SQLException e) {
+            if (e.getErrorCode() == ResultCode.SQLITE_CONSTRAINT.getCode()) {
+                String message = "failed to update actor by ID " + id + " due to unique constraint";
+                log.error(message, e);
+                throw new InvalidDataException(message, e);
+            }
             String message = "failed to update actor by ID " + id + ", error code: " + e.getErrorCode();
             log.error(message, e);
             throw new DatabaseException(message, e);
@@ -75,7 +86,7 @@ public class ActorService {
         if (!updated) {
             String message = "failed to update actor by ID " + id;
             log.error(message);
-            throw new DatabaseException(message);
+            throw new InvalidDataException(message);
         }
         log.info("actor has been updated by ID " + id);
     }
@@ -89,9 +100,14 @@ public class ActorService {
         try {
             deleted = actorDao.deleteById(id);
         } catch (SQLException e) {
+            if (e.getErrorCode() == ResultCode.SQLITE_CONSTRAINT.getCode()) {
+                String message = "failed to delete actor by ID " + id + " due to database constraints";
+                log.error(message, e);
+                throw new InvalidDataException(message, e);
+            }
             String message = "failed to delete actor by ID " + id + ", error code: " + e.getErrorCode();
             log.error(message, e);
-            throw new InvalidDataException(message, e);
+            throw new DatabaseException(message, e);
         }
         if (!deleted) {
             String message = "failed to delete actor by ID " + id;

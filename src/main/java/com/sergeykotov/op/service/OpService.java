@@ -1,6 +1,7 @@
 package com.sergeykotov.op.service;
 
 import com.sergeykotov.op.dao.OpDao;
+import com.sergeykotov.op.dao.ResultCode;
 import com.sergeykotov.op.domain.Op;
 import com.sergeykotov.op.exception.*;
 import org.apache.log4j.Logger;
@@ -31,14 +32,19 @@ public class OpService {
         try {
             created = opDao.create(op);
         } catch (SQLException e) {
+            if (e.getErrorCode() == ResultCode.SQLITE_CONSTRAINT.getCode()) {
+                String message = "failed to create operation " + op + " due to unique constraint";
+                log.error(message, e);
+                throw new InvalidDataException(message, e);
+            }
             String message = "failed to create operation " + op + ", error code: " + e.getErrorCode();
             log.error(message, e);
-            throw new InvalidDataException(message, e);
+            throw new DatabaseException(message, e);
         }
         if (!created) {
             String message = "failed to create operation " + op;
             log.error(message);
-            throw new InvalidDataException(message);
+            throw new DatabaseException(message);
         }
         log.info("operation " + op + " has been created");
         try {
@@ -61,14 +67,19 @@ public class OpService {
         try {
             created = opDao.create(ops);
         } catch (SQLException e) {
+            if (e.getErrorCode() == ResultCode.SQLITE_CONSTRAINT.getCode()) {
+                String message = "failed to create operations " + ops + " due to unique constraint";
+                log.error(message, e);
+                throw new InvalidDataException(message, e);
+            }
             String message = "failed to create operations " + ops + ", error code: " + e.getErrorCode();
             log.error(message, e);
-            throw new InvalidDataException(message, e);
+            throw new DatabaseException(message, e);
         }
         if (!created) {
             String message = "failed to create operations " + ops;
             log.error(message);
-            throw new InvalidDataException(message);
+            throw new DatabaseException(message);
         }
         log.info("operations have been created: " + ops);
         try {
@@ -112,9 +123,14 @@ public class OpService {
         try {
             updated = opDao.updateById(id, op);
         } catch (SQLException e) {
+            if (e.getErrorCode() == ResultCode.SQLITE_CONSTRAINT.getCode()) {
+                String message = "failed to update operation by ID " + id + " due to unique constraint";
+                log.error(message, e);
+                throw new InvalidDataException(message, e);
+            }
             String message = "failed to update operation by ID " + id + ", error code: " + e.getErrorCode();
             log.error(message, e);
-            throw new InvalidDataException(message, e);
+            throw new DatabaseException(message, e);
         }
         if (!updated) {
             String message = "failed to update operation by ID " + id;
@@ -137,9 +153,14 @@ public class OpService {
         try {
             updated = opDao.update(ops);
         } catch (SQLException e) {
+            if (e.getErrorCode() == ResultCode.SQLITE_CONSTRAINT.getCode()) {
+                String message = "failed to update operations " + ops + " due to unique constraint";
+                log.error(message, e);
+                throw new InvalidDataException(message, e);
+            }
             String message = "failed to update operations " + ops + ", error code: " + e.getErrorCode();
             log.error(message, e);
-            throw new InvalidDataException(message, e);
+            throw new DatabaseException(message, e);
         }
         if (!updated) {
             String message = "failed to update operations " + ops;
@@ -158,9 +179,14 @@ public class OpService {
         try {
             deleted = opDao.deleteById(id);
         } catch (SQLException e) {
+            if (e.getErrorCode() == ResultCode.SQLITE_CONSTRAINT.getCode()) {
+                String message = "failed to delete operation by ID " + id + " due to database constraints";
+                log.error(message, e);
+                throw new InvalidDataException(message, e);
+            }
             String message = "failed to delete operation by ID " + id + ", error code: " + e.getErrorCode();
             log.error(message, e);
-            throw new InvalidDataException(message, e);
+            throw new DatabaseException(message, e);
         }
         if (!deleted) {
             String message = "failed to delete operation by ID " + id;
@@ -179,6 +205,11 @@ public class OpService {
         try {
             count = opDao.deleteUnscheduled();
         } catch (SQLException e) {
+            if (e.getErrorCode() == ResultCode.SQLITE_CONSTRAINT.getCode()) {
+                String message = "failed to delete unscheduled operations due to database constraints";
+                log.error(message, e);
+                throw new InvalidDataException(message, e);
+            }
             String message = "failed to delete unscheduled operations, error code: " + e.getErrorCode();
             log.error(message, e);
             throw new DatabaseException(message, e);
