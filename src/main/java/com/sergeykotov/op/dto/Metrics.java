@@ -14,6 +14,7 @@ public class Metrics {
     private double meanOpCountDeviation;
     private Map<Actor, ActorMetrics> actorMetricsMap = new HashMap<>();
     private String note;
+    private boolean generating;
 
     public Metrics() {
     }
@@ -78,5 +79,13 @@ public class Metrics {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public boolean isGenerating() {
+        return generating;
+    }
+
+    public void setGenerating(boolean generating) {
+        this.generating = generating;
     }
 }

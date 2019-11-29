@@ -72,6 +72,7 @@ public class ScheduleService {
         }
         double meanDeviation = deviationSum / actorCount;
         metrics.setMeanOpCountDeviation(meanDeviation);
+        metrics.setGenerating(ScheduleService.generating.get());
 
         long elapsed = System.currentTimeMillis() - start;
         String note = "metrics have been evaluated, elapsed " + elapsed + " milliseconds";
