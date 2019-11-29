@@ -4,6 +4,7 @@ import com.sergeykotov.op.domain.OpType;
 import com.sergeykotov.op.service.AuthorizationService;
 import com.sergeykotov.op.service.OpTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,9 +23,10 @@ public class OpTypeController {
     }
 
     @PostMapping
-    public void create(@RequestHeader String authorization, @RequestBody @Valid OpType opType) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public OpType create(@RequestHeader String authorization, @RequestBody @Valid OpType opType) {
         authorizationService.authorize(authorization);
-        opTypeService.create(opType);
+        return opTypeService.create(opType);
     }
 
     @GetMapping
@@ -39,13 +41,17 @@ public class OpTypeController {
         return opTypeService.getById(id);
     }
 
-    @PutMapping
-    public void update(@RequestHeader String authorization, @RequestBody @Valid OpType opType) {
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateById(@RequestHeader String authorization,
+                           @PathVariable long id,
+                           @RequestBody @Valid OpType opType) {
         authorizationService.authorize(authorization);
-        opTypeService.update(opType);
+        opTypeService.updateById(id, opType);
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@RequestHeader String authorization, @PathVariable long id) {
         authorizationService.authorize(authorization);
         opTypeService.deleteById(id);

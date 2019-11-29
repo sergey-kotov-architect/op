@@ -42,12 +42,12 @@ public class ActorDao {
         }
     }
 
-    public boolean update(Actor actor) throws SQLException {
+    public boolean updateById(long id, Actor actor) throws SQLException {
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CMD)) {
             preparedStatement.setString(1, actor.getName());
             preparedStatement.setString(2, actor.getNote());
-            preparedStatement.setLong(3, actor.getId());
+            preparedStatement.setLong(3, id);
             return preparedStatement.executeUpdate() == 1;
         }
     }

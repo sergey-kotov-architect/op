@@ -116,7 +116,7 @@ public class OpDao {
         }
     }
 
-    public boolean update(Op op) throws SQLException {
+    public boolean updateById(long id, Op op) throws SQLException {
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CMD)) {
             preparedStatement.setString(1, op.getName());
@@ -125,7 +125,7 @@ public class OpDao {
             preparedStatement.setLong(4, op.getOpType().getId());
             preparedStatement.setTimestamp(5, Timestamp.valueOf(op.getDate().atStartOfDay()));
             preparedStatement.setInt(6, op.isScheduled() ? 1 : 0);
-            preparedStatement.setLong(7, op.getId());
+            preparedStatement.setLong(7, id);
             return preparedStatement.executeUpdate() == 1;
         }
     }

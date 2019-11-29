@@ -1,11 +1,11 @@
 package com.sergeykotov.op.controller;
 
 import com.sergeykotov.op.domain.Op;
-import com.sergeykotov.op.dto.GenerationResult;
 import com.sergeykotov.op.dto.Metrics;
 import com.sergeykotov.op.service.AuthorizationService;
 import com.sergeykotov.op.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,8 +41,9 @@ public class ScheduleController {
     }
 
     @PutMapping
-    public GenerationResult generate(@RequestHeader String authorization) {
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void generate(@RequestHeader String authorization) {
         authorizationService.authorize(authorization);
-        return scheduleService.generate();
+        scheduleService.generate();
     }
 }

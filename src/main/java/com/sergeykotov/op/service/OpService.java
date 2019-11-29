@@ -9,66 +9,83 @@ import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OpService {
     private static final Logger log = Logger.getLogger(OpService.class);
 
     private final OpDao opDao;
-    private final ScheduleService scheduleService;
 
     @Autowired
-    public OpService(OpDao opDao, ScheduleService scheduleService) {
+    public OpService(OpDao opDao) {
         this.opDao = opDao;
-        this.scheduleService = scheduleService;
     }
 
-    public boolean create(Op op) {
-        if (scheduleService.isGenerating()) {
+    public Op create(Op op) {
+        if (ScheduleService.generating.get()) {
             throw new ModificationException();
         }
-        log.info("creating operation... " + op);
+        log.info("creating op " + op + "... ");
         boolean created;
         try {
             created = opDao.create(op);
         } catch (SQLException e) {
-            log.error("failed to create operation " + op + ", error code: " + e.getErrorCode(), e);
-            throw new InvalidDataException();
+            String message = "failed to create operation " + op + ", error code: " + e.getErrorCode();
+            log.error(message, e);
+            throw new InvalidDataException(message, e);
         }
         if (!created) {
-            log.error("failed to create operation " + op);
-            throw new InvalidDataException();
+            String message = "failed to create operation " + op;
+            log.error(message);
+            throw new InvalidDataException(message);
         }
-        log.info("operation has been created: " + op);
-        return true;
+        log.info("operation " + op + " has been created");
+        try {
+            return getAll().stream()
+                    .filter(o -> o.getName().equals(op.getName()))
+                    .findAny()
+                    .orElseThrow(NotFoundException::new);
+        } catch (Exception e) {
+            log.error("failed to return created operation " + op, e);
+            return op;
+        }
     }
 
-    public boolean create(List<Op> ops) {
-        if (scheduleService.isGenerating()) {
+    public List<Op> create(List<Op> ops) {
+        if (ScheduleService.generating.get()) {
             throw new ModificationException();
         }
-        log.info("creating operations... " + ops);
+        log.info("creating operations " + ops + "...");
         boolean created;
         try {
             created = opDao.create(ops);
         } catch (SQLException e) {
-            log.error("failed to create operations " + ops + ", error code: " + e.getErrorCode(), e);
-            throw new InvalidDataException();
+            String message = "failed to create operations " + ops + ", error code: " + e.getErrorCode();
+            log.error(message, e);
+            throw new InvalidDataException(message, e);
         }
         if (!created) {
-            log.error("failed to create operations " + ops);
-            throw new InvalidDataException();
+            String message = "failed to create operations " + ops;
+            log.error(message);
+            throw new InvalidDataException(message);
         }
         log.info("operations have been created: " + ops);
-        return true;
+        try {
+            return getAll().stream().filter(ops::contains).collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error("failed to return created operations " + ops, e);
+            return ops;
+        }
     }
 
     public List<Op> getAll() {
         try {
             return opDao.getAll();
         } catch (SQLException e) {
-            log.error("failed to extract operations, error code: " + e.getErrorCode(), e);
-            throw new ExtractionException();
+            String message = "failed to extract operations, error code: " + e.getErrorCode();
+            log.error(message, e);
+            throw new ExtractionException(message, e);
         }
     }
 
@@ -76,8 +93,9 @@ public class OpService {
         try {
             return opDao.getScheduled();
         } catch (SQLException e) {
-            log.error("failed to extract scheduled operations, error code: " + e.getErrorCode(), e);
-            throw new ExtractionException();
+            String message = "failed to extract scheduled operations, error code: " + e.getErrorCode();
+            log.error(message, e);
+            throw new ExtractionException(message, e);
         }
     }
 
@@ -85,72 +103,75 @@ public class OpService {
         return getAll().stream().filter(o -> o.getId() == id).findAny().orElseThrow(NotFoundException::new);
     }
 
-    public boolean update(Op op) {
-        if (scheduleService.isGenerating()) {
+    public void updateById(long id, Op op) {
+        if (ScheduleService.generating.get()) {
             throw new ModificationException();
         }
-        log.info("updating operation... " + op);
+        log.info("updating operation by ID " + id + "...");
         boolean updated;
         try {
-            updated = opDao.update(op);
+            updated = opDao.updateById(id, op);
         } catch (SQLException e) {
-            log.error("failed to update operation " + op + ", error code: " + e.getErrorCode(), e);
-            throw new InvalidDataException();
+            String message = "failed to update operation by ID " + op + ", error code: " + e.getErrorCode();
+            log.error(message, e);
+            throw new InvalidDataException(message, e);
         }
         if (!updated) {
-            log.error("failed to update operation " + op);
-            throw new InvalidDataException();
+            String message = "failed to update operation by ID " + op;
+            log.error(message);
+            throw new InvalidDataException(message);
         }
-        log.info("operation has been updated: " + op);
-        return true;
+        log.info("operation has been updated by ID " + op);
     }
 
-    public boolean updateByUser(List<Op> ops) {
-        if (scheduleService.isGenerating()) {
+    public void updateByUser(List<Op> ops) {
+        if (ScheduleService.generating.get()) {
             throw new ModificationException();
         }
-        return update(ops);
+        update(ops);
     }
 
-    public boolean update(List<Op> ops) {
-        log.info("updating operations... " + ops);
+    public void update(List<Op> ops) {
+        log.info("updating operations " + ops + "...");
         boolean updated;
         try {
             updated = opDao.update(ops);
         } catch (SQLException e) {
-            log.error("failed to update operations " + ops + ", error code: " + e.getErrorCode(), e);
-            throw new InvalidDataException();
+            String message = "failed to update operations " + ops + ", error code: " + e.getErrorCode();
+            log.error(message, e);
+            throw new InvalidDataException(message, e);
         }
         if (!updated) {
-            log.error("failed to update operations " + ops);
-            throw new InvalidDataException();
+            String message = "failed to update operations " + ops;
+            log.error(message);
+            throw new InvalidDataException(message);
         }
         log.info("operations have been updated: " + ops);
-        return true;
     }
 
-    public boolean deleteById(long id) {
-        if (scheduleService.isGenerating()) {
+    public void deleteById(long id) {
+        if (ScheduleService.generating.get()) {
             throw new ModificationException();
         }
-        log.info("deleting operation by id " + id + "...");
+        log.info("deleting operation by ID " + id + "...");
         boolean deleted;
         try {
             deleted = opDao.deleteById(id);
         } catch (SQLException e) {
-            log.error("failed to delete operation by id " + id + ", error code: " + e.getErrorCode(), e);
-            throw new InvalidDataException();
+            String message = "failed to delete operation by ID " + id + ", error code: " + e.getErrorCode();
+            log.error(message, e);
+            throw new InvalidDataException(message, e);
         }
         if (!deleted) {
-            log.error("failed to delete operation by id " + id);
-            throw new InvalidDataException();
+            String message = "failed to delete operation by ID " + id;
+            log.error(message);
+            throw new InvalidDataException(message);
         }
-        log.info("operation has been deleted by id " + id);
-        return true;
+        log.info("operation has been deleted by ID " + id);
     }
 
     public String deleteUnscheduled() {
-        if (scheduleService.isGenerating()) {
+        if (ScheduleService.generating.get()) {
             throw new ModificationException();
         }
         log.info("deleting unscheduled operations...");
@@ -158,8 +179,9 @@ public class OpService {
         try {
             count = opDao.deleteUnscheduled();
         } catch (SQLException e) {
-            log.error("failed to delete unscheduled operations, error code: " + e.getErrorCode(), e);
-            throw new DatabaseException();
+            String message = "failed to delete unscheduled operations, error code: " + e.getErrorCode();
+            log.error(message, e);
+            throw new DatabaseException(message, e);
         }
         String message = count + " unscheduled operations have been deleted";
         log.info(message);

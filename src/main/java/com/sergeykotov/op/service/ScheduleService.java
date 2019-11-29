@@ -6,6 +6,7 @@ import com.sergeykotov.op.domain.OpType;
 import com.sergeykotov.op.dto.ActorMetrics;
 import com.sergeykotov.op.dto.GenerationResult;
 import com.sergeykotov.op.dto.Metrics;
+import com.sergeykotov.op.exception.ModificationException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class ScheduleService {
     private static final Logger log = Logger.getLogger(ScheduleService.class);
-    private static final AtomicBoolean generating = new AtomicBoolean();
+    public static final AtomicBoolean generating = new AtomicBoolean();
 
     private final OpService opService;
     private final OptimisationService optimisationService;
@@ -27,10 +28,6 @@ public class ScheduleService {
     public ScheduleService(OpService opService, OptimisationService optimisationService) {
         this.opService = opService;
         this.optimisationService = optimisationService;
-    }
-
-    public boolean isGenerating() {
-        return generating.get();
     }
 
     public List<Op> get() {
@@ -79,16 +76,13 @@ public class ScheduleService {
         return metrics;
     }
 
-    public GenerationResult generate() {
+    public void generate() {
         if (generating.get()) {
-            GenerationResult generationResult = new GenerationResult();
-            generationResult.setGenerated(false);
-            generationResult.setNote("schedule is being generating");
-            return generationResult;
+            throw new ModificationException();
         }
         generating.set(true);
         try {
-            return generateSchedule();
+            generateSchedule();
         } finally {
             generating.set(false);
         }
@@ -107,9 +101,9 @@ public class ScheduleService {
 
         log.info("saving " + scheduledOps.size() + " scheduled operations...");
         scheduledOps.forEach(o -> o.setScheduled(true));
-        boolean saved;
+        boolean saved = true;
         try {
-            saved = opService.update(ops);
+            opService.update(ops);
         } catch (Exception e) {
             saved = false;
         }

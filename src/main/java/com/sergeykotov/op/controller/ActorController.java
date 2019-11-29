@@ -4,6 +4,7 @@ import com.sergeykotov.op.domain.Actor;
 import com.sergeykotov.op.service.ActorService;
 import com.sergeykotov.op.service.AuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,9 +23,10 @@ public class ActorController {
     }
 
     @PostMapping
-    public void create(@RequestHeader String authorization, @RequestBody @Valid Actor actor) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Actor create(@RequestHeader String authorization, @RequestBody @Valid Actor actor) {
         authorizationService.authorize(authorization);
-        actorService.create(actor);
+        return actorService.create(actor);
     }
 
     @GetMapping
@@ -39,13 +41,17 @@ public class ActorController {
         return actorService.getById(id);
     }
 
-    @PutMapping
-    public void update(@RequestHeader String authorization, @RequestBody @Valid Actor actor) {
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateById(@RequestHeader String authorization,
+                           @PathVariable long id,
+                           @RequestBody @Valid Actor actor) {
         authorizationService.authorize(authorization);
-        actorService.update(actor);
+        actorService.updateById(id, actor);
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@RequestHeader String authorization, @PathVariable long id) {
         authorizationService.authorize(authorization);
         actorService.deleteById(id);

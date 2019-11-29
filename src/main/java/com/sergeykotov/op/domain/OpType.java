@@ -1,12 +1,10 @@
 package com.sergeykotov.op.domain;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
 public class OpType {
-    @Min(1)
     private long id;
 
     @Size(max = 255)

@@ -2,10 +2,7 @@ package com.sergeykotov.op.service;
 
 import com.sergeykotov.op.dao.OpTypeDao;
 import com.sergeykotov.op.domain.OpType;
-import com.sergeykotov.op.exception.ExtractionException;
-import com.sergeykotov.op.exception.InvalidDataException;
-import com.sergeykotov.op.exception.ModificationException;
-import com.sergeykotov.op.exception.NotFoundException;
+import com.sergeykotov.op.exception.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,37 +15,46 @@ public class OpTypeService {
     private static final Logger log = Logger.getLogger(OpTypeService.class);
 
     private final OpTypeDao opTypeDao;
-    private final ScheduleService scheduleService;
 
     @Autowired
-    public OpTypeService(OpTypeDao opTypeDao, ScheduleService scheduleService) {
+    public OpTypeService(OpTypeDao opTypeDao) {
         this.opTypeDao = opTypeDao;
-        this.scheduleService = scheduleService;
     }
 
-    public boolean create(OpType opType) {
-        log.info("creating operation type... " + opType);
+    public OpType create(OpType opType) {
+        log.info("creating operation type " + opType + "...");
         boolean created;
         try {
             created = opTypeDao.create(opType);
         } catch (SQLException e) {
-            log.error("failed to create operation type " + opType + ", error code: " + e.getErrorCode(), e);
-            throw new InvalidDataException();
+            String message = "failed to create operation type " + opType + ", error code: " + e.getErrorCode();
+            log.error(message, e);
+            throw new InvalidDataException(message, e);
         }
         if (!created) {
-            log.error("failed to create operation type " + opType);
-            throw new InvalidDataException();
+            String message = "failed to create operation type " + opType;
+            log.error(message);
+            throw new InvalidDataException(message);
         }
-        log.info("operation type has been created");
-        return true;
+        log.info("operation type " + opType + " has been created");
+        try {
+            return getAll().stream()
+                    .filter(o -> o.getName().equals(opType.getName()))
+                    .findAny()
+                    .orElseThrow(NotFoundException::new);
+        } catch (Exception e) {
+            log.error("failed to return created operation type " + opType, e);
+            return opType;
+        }
     }
 
     public List<OpType> getAll() {
         try {
             return opTypeDao.getAll();
         } catch (SQLException e) {
-            log.error("failed to extract operation types, error code: " + e.getErrorCode(), e);
-            throw new ExtractionException();
+            String message = "failed to extract operation types, error code: " + e.getErrorCode();
+            log.error(message, e);
+            throw new ExtractionException(message, e);
         }
     }
 
@@ -56,40 +62,42 @@ public class OpTypeService {
         return getAll().stream().filter(o -> o.getId() == id).findAny().orElseThrow(NotFoundException::new);
     }
 
-    public boolean update(OpType opType) {
-        log.info("updating operation type... " + opType);
+    public void updateById(long id, OpType opType) {
+        log.info("updating operation type by ID " + id + "...");
         boolean updated;
         try {
-            updated = opTypeDao.update(opType);
+            updated = opTypeDao.updateById(id, opType);
         } catch (SQLException e) {
-            log.error("failed to update operation type " + opType + ", error code: " + e.getErrorCode(), e);
-            throw new InvalidDataException();
+            String message = "failed to update operation type by ID " + id + ", error code: " + e.getErrorCode();
+            log.error(message, e);
+            throw new DatabaseException(message, e);
         }
         if (!updated) {
-            log.error("failed to update operation type " + opType);
-            throw new InvalidDataException();
+            String message = "failed to update operation type by ID " + id;
+            log.error(message);
+            throw new DatabaseException(message);
         }
-        log.info("operation type has been updated: " + opType);
-        return true;
+        log.info("operation type has been updated by ID " + id);
     }
 
-    public boolean deleteById(long id) {
-        if (scheduleService.isGenerating()) {
+    public void deleteById(long id) {
+        if (ScheduleService.generating.get()) {
             throw new ModificationException();
         }
-        log.info("deleting operation type by id " + id + "...");
+        log.info("deleting operation type by ID " + id + "...");
         boolean deleted;
         try {
             deleted = opTypeDao.deleteById(id);
         } catch (SQLException e) {
-            log.error("failed to delete operation type by id " + id + ", error code: " + e.getErrorCode(), e);
-            throw new InvalidDataException();
+            String message = "failed to delete operation type by ID " + id + ", error code: " + e.getErrorCode();
+            log.error(message, e);
+            throw new InvalidDataException(message, e);
         }
         if (!deleted) {
-            log.error("failed to delete operation type by id " + id);
-            throw new InvalidDataException();
+            String message = "failed to delete operation type by ID " + id;
+            log.error(message);
+            throw new InvalidDataException(message);
         }
-        log.info("operation type has been deleted by id " + id);
-        return true;
+        log.info("operation type has been deleted by ID " + id);
     }
 }

@@ -4,6 +4,7 @@ import com.sergeykotov.op.domain.Op;
 import com.sergeykotov.op.service.AuthorizationService;
 import com.sergeykotov.op.service.OpService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,15 +23,17 @@ public class OpController {
     }
 
     @PostMapping
-    public void create(@RequestHeader String authorization, @RequestBody @Valid Op op) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Op create(@RequestHeader String authorization, @RequestBody @Valid Op op) {
         authorizationService.authorize(authorization);
-        opService.create(op);
+        return opService.create(op);
     }
 
     @PostMapping("/list")
-    public void createList(@RequestHeader String authorization, @RequestBody @Valid List<Op> ops) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<Op> createList(@RequestHeader String authorization, @RequestBody @Valid List<Op> ops) {
         authorizationService.authorize(authorization);
-        opService.create(ops);
+        return opService.create(ops);
     }
 
     @GetMapping
@@ -45,19 +48,22 @@ public class OpController {
         return opService.getById(id);
     }
 
-    @PutMapping
-    public void update(@RequestHeader String authorization, @RequestBody @Valid Op op) {
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateById(@RequestHeader String authorization, @PathVariable long id, @RequestBody @Valid Op op) {
         authorizationService.authorize(authorization);
-        opService.update(op);
+        opService.updateById(id, op);
     }
 
-    @PutMapping("/list")
+    @PutMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateList(@RequestHeader String authorization, @RequestBody @Valid List<Op> ops) {
         authorizationService.authorize(authorization);
         opService.updateByUser(ops);
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@RequestHeader String authorization, @PathVariable long id) {
         authorizationService.authorize(authorization);
         opService.deleteById(id);

@@ -42,12 +42,12 @@ public class OpTypeDao {
         }
     }
 
-    public boolean update(OpType opType) throws SQLException {
+    public boolean updateById(long id, OpType opType) throws SQLException {
         try (Connection connection = ConnectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CMD)) {
             preparedStatement.setString(1, opType.getName());
             preparedStatement.setString(2, opType.getNote());
-            preparedStatement.setLong(3, opType.getId());
+            preparedStatement.setLong(3, id);
             return preparedStatement.executeUpdate() == 1;
         }
     }
