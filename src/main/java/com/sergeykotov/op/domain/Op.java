@@ -1,7 +1,5 @@
 package com.sergeykotov.op.domain;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -64,7 +62,6 @@ public class Op {
         this.actor = actor;
     }
 
-    @JsonProperty("op_type")
     public OpType getOpType() {
         return opType;
     }
