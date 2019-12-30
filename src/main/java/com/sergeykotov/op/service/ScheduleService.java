@@ -7,7 +7,8 @@ import com.sergeykotov.op.dto.ActorMetrics;
 import com.sergeykotov.op.dto.Metrics;
 import com.sergeykotov.op.exception.ModificationException;
 import com.sergeykotov.op.task.ScheduleGenerationTask;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class ScheduleService {
-    private static final Logger log = Logger.getLogger(ScheduleService.class);
+    private static final Logger log = LoggerFactory.getLogger(ScheduleService.class);
     public static final AtomicBoolean generating = new AtomicBoolean();
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -72,7 +73,6 @@ public class ScheduleService {
         }
         double meanDeviation = deviationSum / actorCount;
         metrics.setMeanOpCountDeviation(meanDeviation);
-        metrics.setGenerating(ScheduleService.generating.get());
 
         long elapsed = System.currentTimeMillis() - start;
         String note = "metrics have been evaluated, elapsed " + elapsed + " milliseconds";

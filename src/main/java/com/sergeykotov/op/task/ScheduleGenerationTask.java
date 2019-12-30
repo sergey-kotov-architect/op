@@ -4,13 +4,14 @@ import com.sergeykotov.op.domain.Op;
 import com.sergeykotov.op.service.OpService;
 import com.sergeykotov.op.service.OptimisationService;
 import com.sergeykotov.op.service.ScheduleService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ScheduleGenerationTask extends Thread {
-    private static final Logger log = Logger.getLogger(ScheduleGenerationTask.class);
+    private static final Logger log = LoggerFactory.getLogger(ScheduleGenerationTask.class);
     private static final String NAME = "schedule-generation-task";
 
     private final OptimisationService optimisationService;

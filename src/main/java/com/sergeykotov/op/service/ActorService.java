@@ -4,7 +4,8 @@ import com.sergeykotov.op.dao.ActorDao;
 import com.sergeykotov.op.dao.ResultCode;
 import com.sergeykotov.op.domain.Actor;
 import com.sergeykotov.op.exception.*;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Service
 public class ActorService {
-    private static final Logger log = Logger.getLogger(ActorService.class);
+    private static final Logger log = LoggerFactory.getLogger(ActorService.class);
 
     private final ActorDao actorDao;
 

@@ -4,7 +4,8 @@ import com.sergeykotov.op.dao.OpDao;
 import com.sergeykotov.op.dao.ResultCode;
 import com.sergeykotov.op.domain.Op;
 import com.sergeykotov.op.exception.*;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class OpService {
-    private static final Logger log = Logger.getLogger(OpService.class);
+    private static final Logger log = LoggerFactory.getLogger(OpService.class);
 
     private final OpDao opDao;
 

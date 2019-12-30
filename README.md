@@ -31,17 +31,13 @@ not a big number of readers, thus SQLite was selected as database
 engine.
 
 ### Technologies and tools
-* Java 8
-* SQLite
-* JDBC
-* Apache DBCP (connection pooling framework)
-* Spring framework (Boot, Web/MVC, Test, Actuator)
-* Apache log4j
+* Java 8, IntelliJ IDEA
+* SQLite, SQLite Studio
+* JDBC, Apache DBCP (connection pooling framework)
+* Spring framework (Boot, Web/MVC, Test, Actuator, SLF4J/Logback)
 * Maven
 * Git
-* IntelliJ IDEA
 * Insomnia REST Client
-* SQLite Studio
 * VisualVM (Java profiler)
 * Apache JMeter
 
