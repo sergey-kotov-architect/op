@@ -77,6 +77,17 @@ public class OpService {
         }
     }
 
+    public List<Op> getScheduled(long actorId) {
+        try {
+            return opDao.getScheduled(actorId);
+        } catch (SQLException e) {
+            String format = "failed to extract scheduled operations by actor ID %d, error code: %d";
+            String message = String.format(format, actorId, e.getErrorCode());
+            log.error(message, e);
+            throw new ExtractionException(message, e);
+        }
+    }
+
     public Op getById(long id) {
         return getAll().stream().filter(o -> o.getId() == id).findAny().orElseThrow(NotFoundException::new);
     }

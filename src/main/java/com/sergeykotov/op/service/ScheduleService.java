@@ -40,8 +40,8 @@ public class ScheduleService {
         return opService.getScheduled();
     }
 
-    public List<Op> getByActorId(long id) {
-        return get().stream().filter(o -> o.getActor().getId() == id).collect(Collectors.toList());
+    public List<Op> getByActorId(long actorId) {
+        return opService.getScheduled(actorId);
     }
 
     public Metrics evaluateMetrics() {
