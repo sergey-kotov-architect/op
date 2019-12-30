@@ -1,15 +1,21 @@
 package com.sergeykotov.op.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class ActorMetrics {
+    private String name;
     private long opCount;
     private double opCountDeviation;
 
     public ActorMetrics() {
     }
 
-    @JsonProperty("op_count")
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public long getOpCount() {
         return opCount;
     }
@@ -18,7 +24,6 @@ public class ActorMetrics {
         this.opCount = opCount;
     }
 
-    @JsonProperty("op_count_deviation")
     public double getOpCountDeviation() {
         return opCountDeviation;
     }

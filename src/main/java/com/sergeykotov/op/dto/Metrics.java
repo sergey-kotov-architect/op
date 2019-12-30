@@ -1,25 +1,26 @@
 package com.sergeykotov.op.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sergeykotov.op.domain.Actor;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class Metrics {
     private int opTypeCount;
     private int actorCount;
     private int opCount;
+
     private double meanOpCountPerActor;
     private double meanOpCountDeviation;
-    private Map<Actor, ActorMetrics> actorMetricsMap = new HashMap<>();
+
+    private int minOpCountPerActor;
+    private int maxOpCountPerActor;
+    private String minOpCountActor;
+    private String maxOpCountActor;
+
     private String note;
-    private boolean generating;
+    private List<ActorMetrics> actors;
 
     public Metrics() {
     }
 
-    @JsonProperty("op_type_count")
     public int getOpTypeCount() {
         return opTypeCount;
     }
@@ -28,7 +29,6 @@ public class Metrics {
         this.opTypeCount = opTypeCount;
     }
 
-    @JsonProperty("actor_count")
     public int getActorCount() {
         return actorCount;
     }
@@ -37,7 +37,6 @@ public class Metrics {
         this.actorCount = actorCount;
     }
 
-    @JsonProperty("op_count")
     public int getOpCount() {
         return opCount;
     }
@@ -46,7 +45,6 @@ public class Metrics {
         this.opCount = opCount;
     }
 
-    @JsonProperty("mean_op_count_per_actor")
     public double getMeanOpCountPerActor() {
         return meanOpCountPerActor;
     }
@@ -55,7 +53,6 @@ public class Metrics {
         this.meanOpCountPerActor = meanOpCountPerActor;
     }
 
-    @JsonProperty("mean_op_count_deviation")
     public double getMeanOpCountDeviation() {
         return meanOpCountDeviation;
     }
@@ -64,13 +61,36 @@ public class Metrics {
         this.meanOpCountDeviation = meanOpCountDeviation;
     }
 
-    @JsonProperty("actor_metrics_map")
-    public Map<Actor, ActorMetrics> getActorMetricsMap() {
-        return actorMetricsMap;
+    public int getMinOpCountPerActor() {
+        return minOpCountPerActor;
     }
 
-    public void setActorMetricsMap(Map<Actor, ActorMetrics> actorMetricsMap) {
-        this.actorMetricsMap = actorMetricsMap;
+    public void setMinOpCountPerActor(int minOpCountPerActor) {
+        this.minOpCountPerActor = minOpCountPerActor;
+    }
+
+    public int getMaxOpCountPerActor() {
+        return maxOpCountPerActor;
+    }
+
+    public void setMaxOpCountPerActor(int maxOpCountPerActor) {
+        this.maxOpCountPerActor = maxOpCountPerActor;
+    }
+
+    public String getMinOpCountActor() {
+        return minOpCountActor;
+    }
+
+    public void setMinOpCountActor(String minOpCountActor) {
+        this.minOpCountActor = minOpCountActor;
+    }
+
+    public String getMaxOpCountActor() {
+        return maxOpCountActor;
+    }
+
+    public void setMaxOpCountActor(String maxOpCountActor) {
+        this.maxOpCountActor = maxOpCountActor;
     }
 
     public String getNote() {
@@ -81,11 +101,11 @@ public class Metrics {
         this.note = note;
     }
 
-    public boolean isGenerating() {
-        return generating;
+    public List<ActorMetrics> getActors() {
+        return actors;
     }
 
-    public void setGenerating(boolean generating) {
-        this.generating = generating;
+    public void setActors(List<ActorMetrics> actors) {
+        this.actors = actors;
     }
 }

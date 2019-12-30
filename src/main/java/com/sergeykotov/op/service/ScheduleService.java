@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -60,6 +61,7 @@ public class ScheduleService {
         metrics.setOpCount(opCount);
         metrics.setMeanOpCountPerActor(meanOpCountPerActor);
 
+        metrics.setActors(new ArrayList<>(actorCount));
         double deviationSum = 0.0;
         for (Actor actor : actors) {
             long opCountPerActor = ops.stream().filter(o -> o.getActor().equals(actor)).count();
@@ -67,9 +69,10 @@ public class ScheduleService {
             deviationSum += deviation;
 
             ActorMetrics actorMetrics = new ActorMetrics();
+            actorMetrics.setName(actor.getName());
             actorMetrics.setOpCount(opCountPerActor);
             actorMetrics.setOpCountDeviation(deviation);
-            metrics.getActorMetricsMap().put(actor, actorMetrics);
+            metrics.getActors().add(actorMetrics);
         }
         double meanDeviation = deviationSum / actorCount;
         metrics.setMeanOpCountDeviation(meanDeviation);
