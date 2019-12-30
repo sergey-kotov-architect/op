@@ -61,6 +61,11 @@ public class ScheduleService {
         metrics.setOpCount(opCount);
         metrics.setMeanOpCountPerActor(meanOpCountPerActor);
 
+        long minOpCount = Long.MAX_VALUE;
+        String minActor = null;
+        long maxOpCount = 0;
+        String maxActor = null;
+
         metrics.setActors(new ArrayList<>(actorCount));
         double deviationSum = 0.0;
         for (Actor actor : actors) {
@@ -73,9 +78,23 @@ public class ScheduleService {
             actorMetrics.setOpCount(opCountPerActor);
             actorMetrics.setOpCountDeviation(deviation);
             metrics.getActors().add(actorMetrics);
+
+            if (opCountPerActor < minOpCount) {
+                minOpCount = opCountPerActor;
+                minActor = actor.getName();
+            }
+            if (opCountPerActor > maxOpCount) {
+                maxOpCount = opCountPerActor;
+                maxActor = actor.getName();
+            }
         }
         double meanDeviation = deviationSum / actorCount;
         metrics.setMeanOpCountDeviation(meanDeviation);
+
+        metrics.setMinOpCountPerActor(minOpCount);
+        metrics.setMinOpCountActor(minActor);
+        metrics.setMaxOpCountPerActor(maxOpCount);
+        metrics.setMaxOpCountActor(maxActor);
 
         long elapsed = System.currentTimeMillis() - start;
         String note = "metrics have been evaluated, elapsed " + elapsed + " milliseconds";

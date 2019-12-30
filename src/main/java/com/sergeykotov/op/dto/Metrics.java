@@ -10,8 +10,8 @@ public class Metrics {
     private double meanOpCountPerActor;
     private double meanOpCountDeviation;
 
-    private int minOpCountPerActor;
-    private int maxOpCountPerActor;
+    private long minOpCountPerActor;
+    private long maxOpCountPerActor;
     private String minOpCountActor;
     private String maxOpCountActor;
 
@@ -61,19 +61,19 @@ public class Metrics {
         this.meanOpCountDeviation = meanOpCountDeviation;
     }
 
-    public int getMinOpCountPerActor() {
+    public long getMinOpCountPerActor() {
         return minOpCountPerActor;
     }
 
-    public void setMinOpCountPerActor(int minOpCountPerActor) {
+    public void setMinOpCountPerActor(long minOpCountPerActor) {
         this.minOpCountPerActor = minOpCountPerActor;
     }
 
-    public int getMaxOpCountPerActor() {
+    public long getMaxOpCountPerActor() {
         return maxOpCountPerActor;
     }
 
-    public void setMaxOpCountPerActor(int maxOpCountPerActor) {
+    public void setMaxOpCountPerActor(long maxOpCountPerActor) {
         this.maxOpCountPerActor = maxOpCountPerActor;
     }
 
