@@ -35,14 +35,14 @@ engine.
 * SQLite, SQLite Studio
 * JDBC, Apache DBCP (connection pooling framework)
 * Spring framework (Boot, Web/MVC, Test, Actuator, SLF4J/Logback)
-* Maven
-* Git
-* Insomnia REST Client
-* VisualVM (Java profiler)
-* Apache JMeter
+* Maven, Git
+* VisualVM (Java profiler), Apache JMeter, Insomnia REST Client
 
 ### Future improvements
-* devise an approximate, heuristic solution
+* devise an approximate, heuristic solution, probably using dynamic programming
 * design UI, probably using React framework
 * provide performance benchmarks
 * conduct profound static code analysis
+* cache evaluated metrics
+* introduce security layer
+* add integration tests
