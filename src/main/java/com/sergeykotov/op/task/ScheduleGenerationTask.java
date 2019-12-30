@@ -43,6 +43,7 @@ public class ScheduleGenerationTask extends Thread {
                 opService.update(ops);
             } catch (Exception e) {
                 log.error("failed to save generated schedule");
+                return;
             }
             log.info("schedule has been saved");
         } finally {
