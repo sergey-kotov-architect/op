@@ -8,12 +8,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ControllerExceptionHandler {
-
-    @ExceptionHandler(value = AuthorizationException.class)
-    public ResponseEntity<?> handleAuthorizationException(AuthorizationException exception) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
-
     @ExceptionHandler(value = NotFoundException.class)
     public ResponseEntity<?> handleNotFoundException(NotFoundException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

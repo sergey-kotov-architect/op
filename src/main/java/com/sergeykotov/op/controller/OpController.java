@@ -1,7 +1,6 @@
 package com.sergeykotov.op.controller;
 
 import com.sergeykotov.op.domain.Op;
-import com.sergeykotov.op.service.AuthorizationService;
 import com.sergeykotov.op.service.OpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,72 +12,55 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/op")
 public class OpController {
-    private final AuthorizationService authorizationService;
     private final OpService opService;
 
     @Autowired
-    public OpController(AuthorizationService authorizationService, OpService opService) {
-        this.authorizationService = authorizationService;
+    public OpController(OpService opService) {
         this.opService = opService;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Op create(@RequestHeader String authorization, @RequestBody @Valid Op op) {
-        authorizationService.authorize(authorization);
-        return opService.create(op);
-    }
-
-    @PostMapping("/list")
-    @ResponseStatus(HttpStatus.CREATED)
-    public List<Op> createList(@RequestHeader String authorization, @RequestBody @Valid List<Op> ops) {
-        authorizationService.authorize(authorization);
+    public List<Op> createList(@RequestBody @Valid List<Op> ops) {
         return opService.create(ops);
     }
 
     @GetMapping
-    public List<Op> getAll(@RequestHeader String authorization) {
-        authorizationService.authorize(authorization);
+    public List<Op> getAll() {
         return opService.getAll();
     }
 
     @GetMapping("/{id}")
-    public Op getById(@RequestHeader String authorization, @PathVariable long id) {
-        authorizationService.authorize(authorization);
+    public Op getById(@PathVariable long id) {
         return opService.getById(id);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateById(@RequestHeader String authorization, @PathVariable long id, @RequestBody @Valid Op op) {
-        authorizationService.authorize(authorization);
+    public void updateById(@PathVariable long id, @RequestBody @Valid Op op) {
         opService.updateById(id, op);
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateList(@RequestHeader String authorization, @RequestBody @Valid List<Op> ops) {
-        authorizationService.authorize(authorization);
+    public void updateList(@RequestBody @Valid List<Op> ops) {
         opService.updateByUser(ops);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@RequestHeader String authorization, @PathVariable long id) {
-        authorizationService.authorize(authorization);
+    public void deleteById(@PathVariable long id) {
         opService.deleteById(id);
     }
 
-    @DeleteMapping("/list")
+    @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteList(@RequestHeader String authorization, @RequestBody long[] ids) {
-        authorizationService.authorize(authorization);
+    public void deleteList(@RequestBody long[] ids) {
         opService.deleteList(ids);
     }
 
-    @DeleteMapping
-    public String deleteUnscheduled(@RequestHeader String authorization) {
-        authorizationService.authorize(authorization);
+    @DeleteMapping("unscheduled")
+    public String deleteUnscheduled() {
         return opService.deleteUnscheduled();
     }
 }

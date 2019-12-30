@@ -24,41 +24,6 @@ public class OpService {
         this.opDao = opDao;
     }
 
-    public Op create(Op op) {
-        if (ScheduleService.generating.get()) {
-            throw new ModificationException();
-        }
-        log.info("creating operation " + op + "... ");
-        boolean created;
-        try {
-            created = opDao.create(op);
-        } catch (SQLException e) {
-            if (e.getErrorCode() == ResultCode.SQLITE_CONSTRAINT.getCode()) {
-                String message = "failed to create operation " + op + " due to unique constraint";
-                log.error(message, e);
-                throw new InvalidDataException(message, e);
-            }
-            String message = "failed to create operation " + op + ", error code: " + e.getErrorCode();
-            log.error(message, e);
-            throw new DatabaseException(message, e);
-        }
-        if (!created) {
-            String message = "failed to create operation " + op;
-            log.error(message);
-            throw new DatabaseException(message);
-        }
-        log.info("operation " + op + " has been created");
-        try {
-            return getAll().stream()
-                    .filter(o -> o.getName().equals(op.getName()))
-                    .findAny()
-                    .orElseThrow(NotFoundException::new);
-        } catch (Exception e) {
-            log.error("failed to return created operation " + op, e);
-            return op;
-        }
-    }
-
     public List<Op> create(List<Op> ops) {
         if (ScheduleService.generating.get()) {
             throw new ModificationException();
