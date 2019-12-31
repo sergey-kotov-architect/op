@@ -24,7 +24,7 @@ public class ActorService {
     }
 
     public Actor create(Actor actor) {
-        log.info("creating actor " + actor + "...");
+        log.info("creating actor, name: " + actor.getName() + ", note: " + actor.getNote());
         boolean created;
         try {
             created = actorDao.create(actor);
@@ -34,7 +34,7 @@ public class ActorService {
                 log.error(message, e);
                 throw new InvalidDataException(message, e);
             }
-            String message = "failed to create actor " + actor + ", error code: " + e.getErrorCode();
+            String message = "failed to create actor " + actor + ", error code " + e.getErrorCode();
             log.error(message, e);
             throw new DatabaseException(message, e);
         }
@@ -59,7 +59,7 @@ public class ActorService {
         try {
             return actorDao.getAll();
         } catch (SQLException e) {
-            String message = "failed to extract actors, error code: " + e.getErrorCode();
+            String message = "failed to extract actors, error code " + e.getErrorCode();
             log.error(message, e);
             throw new ExtractionException(message, e);
         }
@@ -70,7 +70,7 @@ public class ActorService {
     }
 
     public void updateById(long id, Actor actor) {
-        log.info("updating actor by ID " + id + "...");
+        log.info("updating actor by ID " + id + ", name: " + actor.getName() + ", note: " + actor.getNote());
         boolean updated;
         try {
             updated = actorDao.updateById(id, actor);
@@ -80,7 +80,7 @@ public class ActorService {
                 log.error(message, e);
                 throw new InvalidDataException(message, e);
             }
-            String message = "failed to update actor by ID " + id + ", error code: " + e.getErrorCode();
+            String message = "failed to update actor by ID " + id + ", error code " + e.getErrorCode();
             log.error(message, e);
             throw new DatabaseException(message, e);
         }
@@ -96,7 +96,7 @@ public class ActorService {
         if (ScheduleService.generating.get()) {
             throw new ModificationException();
         }
-        log.info("deleting actor by ID " + id + "...");
+        log.info("deleting actor by ID " + id);
         boolean deleted;
         try {
             deleted = actorDao.deleteById(id);
@@ -106,7 +106,7 @@ public class ActorService {
                 log.error(message, e);
                 throw new InvalidDataException(message, e);
             }
-            String message = "failed to delete actor by ID " + id + ", error code: " + e.getErrorCode();
+            String message = "failed to delete actor by ID " + id + ", error code " + e.getErrorCode();
             log.error(message, e);
             throw new DatabaseException(message, e);
         }

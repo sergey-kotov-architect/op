@@ -61,7 +61,7 @@ public class OpService {
         try {
             return opDao.getAll();
         } catch (SQLException e) {
-            String message = "failed to extract operations, error code: " + e.getErrorCode();
+            String message = "failed to extract operations, error code " + e.getErrorCode();
             log.error(message, e);
             throw new ExtractionException(message, e);
         }
@@ -71,7 +71,7 @@ public class OpService {
         try {
             return opDao.getScheduled();
         } catch (SQLException e) {
-            String message = "failed to extract scheduled operations, error code: " + e.getErrorCode();
+            String message = "failed to extract scheduled operations, error code " + e.getErrorCode();
             log.error(message, e);
             throw new ExtractionException(message, e);
         }
@@ -81,7 +81,7 @@ public class OpService {
         try {
             return opDao.getScheduled(actorId);
         } catch (SQLException e) {
-            String format = "failed to extract scheduled operations by actor ID %d, error code: %d";
+            String format = "failed to extract scheduled operations by actor ID %d, error code %d";
             String message = String.format(format, actorId, e.getErrorCode());
             log.error(message, e);
             throw new ExtractionException(message, e);
@@ -96,7 +96,8 @@ public class OpService {
         if (ScheduleService.generating.get()) {
             throw new ModificationException();
         }
-        log.info("updating operation by ID " + id + "...");
+        String opString = "name: " + op.getName() + ", note: " + op.getNote() + ", scheduled: " + op.isScheduled();
+        log.info("updating operation by ID " + id + ", " + opString);
         boolean updated;
         try {
             updated = opDao.updateById(id, op);
@@ -106,7 +107,7 @@ public class OpService {
                 log.error(message, e);
                 throw new InvalidDataException(message, e);
             }
-            String message = "failed to update operation by ID " + id + ", error code: " + e.getErrorCode();
+            String message = "failed to update operation by ID " + id + ", error code " + e.getErrorCode();
             log.error(message, e);
             throw new DatabaseException(message, e);
         }
@@ -136,7 +137,7 @@ public class OpService {
                 log.error(message, e);
                 throw new InvalidDataException(message, e);
             }
-            String message = "failed to update operations " + ops + ", error code: " + e.getErrorCode();
+            String message = "failed to update operations " + ops + ", error code " + e.getErrorCode();
             log.error(message, e);
             throw new DatabaseException(message, e);
         }
@@ -162,7 +163,7 @@ public class OpService {
                 log.error(message, e);
                 throw new InvalidDataException(message, e);
             }
-            String message = "failed to delete operation by ID " + id + ", error code: " + e.getErrorCode();
+            String message = "failed to delete operation by ID " + id + ", error code " + e.getErrorCode();
             log.error(message, e);
             throw new DatabaseException(message, e);
         }
@@ -189,7 +190,7 @@ public class OpService {
                 log.error(message, e);
                 throw new InvalidDataException(message, e);
             }
-            String message = "failed to delete operations by IDs " + idList + ", error code: " + e.getErrorCode();
+            String message = "failed to delete operations by IDs " + idList + ", error code " + e.getErrorCode();
             log.error(message, e);
             throw new DatabaseException(message, e);
         }
@@ -215,7 +216,7 @@ public class OpService {
                 log.error(message, e);
                 throw new InvalidDataException(message, e);
             }
-            String message = "failed to delete unscheduled operations, error code: " + e.getErrorCode();
+            String message = "failed to delete unscheduled operations, error code " + e.getErrorCode();
             log.error(message, e);
             throw new DatabaseException(message, e);
         }

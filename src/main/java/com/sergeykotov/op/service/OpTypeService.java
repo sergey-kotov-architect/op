@@ -24,7 +24,7 @@ public class OpTypeService {
     }
 
     public OpType create(OpType opType) {
-        log.info("creating operation type " + opType + "...");
+        log.info("creating operation type, name: " + opType.getName() + ", note: " + opType.getNote());
         boolean created;
         try {
             created = opTypeDao.create(opType);
@@ -34,7 +34,7 @@ public class OpTypeService {
                 log.error(message, e);
                 throw new InvalidDataException(message, e);
             }
-            String message = "failed to create operation type " + opType + ", error code: " + e.getErrorCode();
+            String message = "failed to create operation type " + opType + ", error code " + e.getErrorCode();
             log.error(message, e);
             throw new DatabaseException(message, e);
         }
@@ -59,7 +59,7 @@ public class OpTypeService {
         try {
             return opTypeDao.getAll();
         } catch (SQLException e) {
-            String message = "failed to extract operation types, error code: " + e.getErrorCode();
+            String message = "failed to extract operation types, error code " + e.getErrorCode();
             log.error(message, e);
             throw new ExtractionException(message, e);
         }
@@ -70,7 +70,7 @@ public class OpTypeService {
     }
 
     public void updateById(long id, OpType opType) {
-        log.info("updating operation type by ID " + id + "...");
+        log.info("updating operation type by ID " + id + ", name: " + opType.getName() + ", note: " + opType.getNote());
         boolean updated;
         try {
             updated = opTypeDao.updateById(id, opType);
@@ -80,7 +80,7 @@ public class OpTypeService {
                 log.error(message, e);
                 throw new InvalidDataException(message, e);
             }
-            String message = "failed to update operation type by ID " + id + ", error code: " + e.getErrorCode();
+            String message = "failed to update operation type by ID " + id + ", error code " + e.getErrorCode();
             log.error(message, e);
             throw new DatabaseException(message, e);
         }
@@ -96,7 +96,7 @@ public class OpTypeService {
         if (ScheduleService.generating.get()) {
             throw new ModificationException();
         }
-        log.info("deleting operation type by ID " + id + "...");
+        log.info("deleting operation type by ID " + id);
         boolean deleted;
         try {
             deleted = opTypeDao.deleteById(id);
@@ -106,7 +106,7 @@ public class OpTypeService {
                 log.error(message, e);
                 throw new InvalidDataException(message, e);
             }
-            String message = "failed to delete operation type by ID " + id + ", error code: " + e.getErrorCode();
+            String message = "failed to delete operation type by ID " + id + ", error code " + e.getErrorCode();
             log.error(message, e);
             throw new DatabaseException(message, e);
         }
