@@ -67,6 +67,16 @@ public class OpService {
         }
     }
 
+    public Op getById(long id) {
+        try {
+            return opDao.getById(id).orElseThrow(NotFoundException::new);
+        } catch (SQLException e) {
+            String message = "failed to extract operation by ID " + id + ", error code " + e.getErrorCode();
+            log.error(message, e);
+            throw new ExtractionException(message, e);
+        }
+    }
+
     public List<Op> getScheduled() {
         try {
             return opDao.getScheduled();
@@ -86,10 +96,6 @@ public class OpService {
             log.error(message, e);
             throw new ExtractionException(message, e);
         }
-    }
-
-    public Op getById(long id) {
-        return getAll().stream().filter(o -> o.getId() == id).findAny().orElseThrow(NotFoundException::new);
     }
 
     public void updateById(long id, Op op) {

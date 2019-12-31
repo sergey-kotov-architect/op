@@ -9,6 +9,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class OpDao {
@@ -17,6 +18,9 @@ public class OpDao {
     private static final String GET_CMD = "select o.id, o.name, o.note, o.actor_id, a.name as a_name, " +
             "a.note as a_note, o.op_type_id, t.name as t_name, t.note as t_note, o.dt, o.scheduled " +
             "from op o join actor a on o.actor_id = a.id join op_type t on o.op_type_id = t.id;";
+    private static final String GET_BY_ID_CMD = "select o.name, o.note, o.actor_id, a.name as a_name, " +
+            "a.note as a_note, o.op_type_id, t.name as t_name, t.note as t_note, o.dt, o.scheduled " +
+            "from op o join actor a on o.actor_id = a.id join op_type t on o.op_type_id = t.id where o.id = ?;";
     private static final String GET_SCHEDULED_CMD = "select o.id, o.name, o.note, o.actor_id, a.name as a_name, " +
             "a.note as a_note, o.op_type_id, t.name as t_name, t.note as t_note, o.dt " +
             "from op o join actor a on o.actor_id = a.id join op_type t on o.op_type_id = t.id where o.scheduled = 1;";
@@ -73,6 +77,38 @@ public class OpDao {
                 ops.add(op);
             }
             return ops;
+        }
+    }
+
+    public Optional<Op> getById(long id) throws SQLException {
+        try (Connection connection = ConnectionPool.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_BY_ID_CMD)) {
+            preparedStatement.setLong(1, id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (!resultSet.next()) {
+                    return Optional.empty();
+                }
+                Op op = new Op();
+                op.setId(id);
+                op.setName(resultSet.getString("name"));
+                op.setNote(resultSet.getString("note"));
+
+                Actor actor = new Actor();
+                actor.setId(resultSet.getLong("actor_id"));
+                actor.setName(resultSet.getString("a_name"));
+                actor.setNote(resultSet.getString("a_note"));
+                op.setActor(actor);
+
+                OpType opType = new OpType();
+                opType.setId(resultSet.getLong("op_type_id"));
+                opType.setName(resultSet.getString("t_name"));
+                opType.setNote(resultSet.getString("t_note"));
+                op.setOpType(opType);
+
+                op.setDate(resultSet.getTimestamp("dt").toLocalDateTime().toLocalDate());
+                op.setScheduled(true);
+                return Optional.of(op);
+            }
         }
     }
 
