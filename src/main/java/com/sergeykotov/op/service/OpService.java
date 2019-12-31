@@ -29,7 +29,7 @@ public class OpService {
         if (ScheduleService.generating.get()) {
             throw new ModificationException();
         }
-        log.info("creating operations " + ops + "...");
+        log.info("creating operations " + ops);
         boolean created;
         try {
             created = opDao.create(ops);
@@ -133,7 +133,7 @@ public class OpService {
     }
 
     public void update(List<Op> ops) {
-        log.info("updating operations " + ops + "...");
+        log.info("updating operations " + ops);
         boolean updated;
         try {
             updated = opDao.update(ops);
@@ -159,7 +159,7 @@ public class OpService {
         if (ScheduleService.generating.get()) {
             throw new ModificationException();
         }
-        log.info("deleting operation by ID " + id + "...");
+        log.info("deleting operation by ID " + id);
         boolean deleted;
         try {
             deleted = opDao.deleteById(id);
@@ -186,7 +186,7 @@ public class OpService {
             throw new ModificationException();
         }
         String idList = Arrays.toString(ids);
-        log.info("deleting operations by IDs " + idList + "...");
+        log.info("deleting operations by IDs " + idList);
         boolean deleted;
         try {
             deleted = opDao.deleteList(ids);
