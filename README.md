@@ -6,7 +6,7 @@ generates an optimal schedule of operations and evaluates its metrics.
 * evaluate metrics of the schedule
 * extract schedule
 * extract scheduled operations for a specific actor
-* create, update a list of operations
+* create, update, delete a list of operations
 * delete unscheduled operations
 * create, get all, get by id, update, delete by id actor, operation type, operation
 
