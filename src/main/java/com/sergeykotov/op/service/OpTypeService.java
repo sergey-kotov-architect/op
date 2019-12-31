@@ -24,7 +24,7 @@ public class OpTypeService {
     }
 
     public OpType create(OpType opType) {
-        log.info("creating operation type, name: " + opType.getName() + ", note: " + opType.getNote());
+        log.info("creating operation type, name: {}, note: {}", opType.getName(), opType.getNote());
         boolean created;
         try {
             created = opTypeDao.create(opType);
@@ -43,7 +43,7 @@ public class OpTypeService {
             log.error(message);
             throw new DatabaseException(message);
         }
-        log.info("operation type " + opType + " has been created");
+        log.info("operation type {} has been created", opType);
         try {
             return getAll().stream()
                     .filter(o -> o.getName().equals(opType.getName()))
@@ -70,7 +70,7 @@ public class OpTypeService {
     }
 
     public void updateById(long id, OpType opType) {
-        log.info("updating operation type by ID " + id + ", name: " + opType.getName() + ", note: " + opType.getNote());
+        log.info("updating operation type by ID {}, name: {}, note: {}", id, opType.getName(), opType.getNote());
         boolean updated;
         try {
             updated = opTypeDao.updateById(id, opType);
@@ -89,14 +89,14 @@ public class OpTypeService {
             log.error(message);
             throw new InvalidDataException(message);
         }
-        log.info("operation type has been updated by ID " + id);
+        log.info("operation type has been updated by ID {}", id);
     }
 
     public void deleteById(long id) {
         if (ScheduleService.generating.get()) {
             throw new ModificationException();
         }
-        log.info("deleting operation type by ID " + id);
+        log.info("deleting operation type by ID {}", id);
         boolean deleted;
         try {
             deleted = opTypeDao.deleteById(id);
@@ -115,6 +115,6 @@ public class OpTypeService {
             log.error(message);
             throw new InvalidDataException(message);
         }
-        log.info("operation type has been deleted by ID " + id);
+        log.info("operation type has been deleted by ID {}", id);
     }
 }

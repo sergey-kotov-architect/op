@@ -29,7 +29,7 @@ public class OpService {
         if (ScheduleService.generating.get()) {
             throw new ModificationException();
         }
-        log.info("creating operations " + ops);
+        log.info("creating operations {}", ops);
         boolean created;
         try {
             created = opDao.create(ops);
@@ -48,7 +48,7 @@ public class OpService {
             log.error(message);
             throw new DatabaseException(message);
         }
-        log.info("operations have been created: " + ops);
+        log.info("operations have been created: {}", ops);
         try {
             return getAll().stream().filter(ops::contains).collect(Collectors.toList());
         } catch (Exception e) {
@@ -102,8 +102,7 @@ public class OpService {
         if (ScheduleService.generating.get()) {
             throw new ModificationException();
         }
-        String opString = "name: " + op.getName() + ", note: " + op.getNote() + ", scheduled: " + op.isScheduled();
-        log.info("updating operation by ID " + id + ", " + opString);
+        log.info("updating operation by ID {}, name: {}, note: {}, scheduled: {}", id, op.getName(), op.getNote(), op.isScheduled());
         boolean updated;
         try {
             updated = opDao.updateById(id, op);
@@ -122,7 +121,7 @@ public class OpService {
             log.error(message);
             throw new InvalidDataException(message);
         }
-        log.info("operation has been updated by ID " + id);
+        log.info("operation has been updated by ID {}", id);
     }
 
     public void updateByUser(List<Op> ops) {
@@ -133,7 +132,7 @@ public class OpService {
     }
 
     public void update(List<Op> ops) {
-        log.info("updating operations " + ops);
+        log.info("updating operations {}", ops);
         boolean updated;
         try {
             updated = opDao.update(ops);
@@ -152,14 +151,14 @@ public class OpService {
             log.error(message);
             throw new InvalidDataException(message);
         }
-        log.info("operations have been updated: " + ops);
+        log.info("operations have been updated: {}", ops);
     }
 
     public void deleteById(long id) {
         if (ScheduleService.generating.get()) {
             throw new ModificationException();
         }
-        log.info("deleting operation by ID " + id);
+        log.info("deleting operation by ID {}", id);
         boolean deleted;
         try {
             deleted = opDao.deleteById(id);
@@ -178,7 +177,7 @@ public class OpService {
             log.error(message);
             throw new InvalidDataException(message);
         }
-        log.info("operation has been deleted by ID " + id);
+        log.info("operation has been deleted by ID {}", id);
     }
 
     public void deleteList(long[] ids) {
@@ -186,7 +185,7 @@ public class OpService {
             throw new ModificationException();
         }
         String idList = Arrays.toString(ids);
-        log.info("deleting operations by IDs " + idList);
+        log.info("deleting operations by IDs {}", idList);
         boolean deleted;
         try {
             deleted = opDao.deleteList(ids);
@@ -205,7 +204,7 @@ public class OpService {
             log.error(message);
             throw new InvalidDataException(message);
         }
-        log.info("operations have been deleted by IDs " + idList);
+        log.info("operations have been deleted by IDs {}", idList);
     }
 
     public String deleteUnscheduled() {

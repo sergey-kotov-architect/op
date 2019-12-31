@@ -29,15 +29,15 @@ public class ScheduleGenerationTask extends Thread {
         try {
             log.info("extracting operations for generating a schedule...");
             List<Op> ops = opService.getAll().stream().peek(o -> o.setScheduled(false)).collect(Collectors.toList());
-            log.info(ops.size() + " operations have been extracted");
+            log.info("{} operations have been extracted", ops.size());
 
             log.info("generating an optimal schedule...");
             long start = System.currentTimeMillis();
             List<Op> scheduledOps = optimisationService.optimise(ops);
             long elapsed = System.currentTimeMillis() - start;
-            log.info("optimal schedule has been generated in " + elapsed + " milliseconds");
+            log.info("optimal schedule has been generated in {} milliseconds", elapsed);
 
-            log.info("saving " + scheduledOps.size() + " scheduled operations...");
+            log.info("saving {} scheduled operations...", scheduledOps.size());
             scheduledOps.forEach(o -> o.setScheduled(true));
             try {
                 opService.update(ops);

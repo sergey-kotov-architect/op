@@ -24,7 +24,7 @@ public class ActorService {
     }
 
     public Actor create(Actor actor) {
-        log.info("creating actor, name: " + actor.getName() + ", note: " + actor.getNote());
+        log.info("creating actor, name: {}, note: {}", actor.getName(), actor.getNote());
         boolean created;
         try {
             created = actorDao.create(actor);
@@ -43,7 +43,7 @@ public class ActorService {
             log.error(message);
             throw new DatabaseException(message);
         }
-        log.info("actor " + actor + " has been created");
+        log.info("actor {} has been created", actor);
         try {
             return getAll().stream()
                     .filter(o -> o.getName().equals(actor.getName()))
@@ -70,7 +70,7 @@ public class ActorService {
     }
 
     public void updateById(long id, Actor actor) {
-        log.info("updating actor by ID " + id + ", name: " + actor.getName() + ", note: " + actor.getNote());
+        log.info("updating actor by ID {}, name: {}, note: {}", id, actor.getName(), actor.getNote());
         boolean updated;
         try {
             updated = actorDao.updateById(id, actor);
@@ -89,14 +89,14 @@ public class ActorService {
             log.error(message);
             throw new InvalidDataException(message);
         }
-        log.info("actor has been updated by ID " + id);
+        log.info("actor has been updated by ID {}", id);
     }
 
     public void deleteById(long id) {
         if (ScheduleService.generating.get()) {
             throw new ModificationException();
         }
-        log.info("deleting actor by ID " + id);
+        log.info("deleting actor by ID {}", id);
         boolean deleted;
         try {
             deleted = actorDao.deleteById(id);
@@ -115,6 +115,6 @@ public class ActorService {
             log.error(message);
             throw new InvalidDataException(message);
         }
-        log.info("actor has been deleted by ID " + id);
+        log.info("actor has been deleted by ID {}", id);
     }
 }
