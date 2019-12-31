@@ -39,6 +39,7 @@ engine.
 * VisualVM (Java profiler), Apache JMeter, Insomnia REST Client
 
 ### Future improvements
+* accelerate schedule generation with multithreading
 * devise an approximate, heuristic solution, probably using dynamic programming
 * design UI, probably using React framework
 * provide performance benchmarks
