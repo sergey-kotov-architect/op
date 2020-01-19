@@ -3,6 +3,7 @@ package com.sergeykotov.op.dto;
 import java.util.List;
 
 public class Metrics {
+    private long dateCount;
     private int opTypeCount;
     private int actorCount;
     private int opCount;
@@ -19,6 +20,14 @@ public class Metrics {
     private List<ActorMetrics> actors;
 
     public Metrics() {
+    }
+
+    public long getDateCount() {
+        return dateCount;
+    }
+
+    public void setDateCount(long dateCount) {
+        this.dateCount = dateCount;
     }
 
     public int getOpTypeCount() {

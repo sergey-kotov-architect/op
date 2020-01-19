@@ -45,12 +45,13 @@ public class ScheduleService {
     }
 
     public Metrics evaluateMetrics() {
-        long start = System.currentTimeMillis();
         log.info("evaluating metrics...");
+        long start = System.currentTimeMillis();
 
         List<Op> ops = get();
         Set<Actor> actors = ops.stream().map(Op::getActor).collect(Collectors.toSet());
         Set<OpType> opTypes = ops.stream().map(Op::getOpType).collect(Collectors.toSet());
+        long dateCount = ops.stream().map(Op::getDate).distinct().count();
         int opCount = ops.size();
         int actorCount = actors.size();
         double meanOpCountPerActor = (double) opCount / actorCount;
@@ -59,6 +60,7 @@ public class ScheduleService {
         metrics.setActorCount(actorCount);
         metrics.setOpTypeCount(opTypes.size());
         metrics.setOpCount(opCount);
+        metrics.setDateCount(dateCount);
         metrics.setMeanOpCountPerActor(meanOpCountPerActor);
 
         long minOpCount = Long.MAX_VALUE;
