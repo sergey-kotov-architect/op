@@ -34,7 +34,7 @@ engine.
 * Java 8, IntelliJ IDEA
 * SQLite, SQLite Studio
 * JDBC, Apache DBCP (connection pooling framework)
-* Spring framework (Boot, Web/MVC, Test, Actuator, SLF4J/Logback)
+* Spring framework (Boot, Web/MVC, Test, Actuator, SLF4J/Logback, caching)
 * Maven, Git
 * VisualVM (Java profiler), Apache JMeter, Insomnia REST Client
 
