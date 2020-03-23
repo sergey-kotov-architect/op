@@ -7,6 +7,7 @@ import com.sergeykotov.op.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -17,10 +18,12 @@ public class OpTypeService {
     private static final Logger log = LoggerFactory.getLogger(OpTypeService.class);
 
     private final OpTypeDao opTypeDao;
+    private final CacheManager cacheManager;
 
     @Autowired
-    public OpTypeService(OpTypeDao opTypeDao) {
+    public OpTypeService(OpTypeDao opTypeDao, CacheManager cacheManager) {
         this.opTypeDao = opTypeDao;
+        this.cacheManager = cacheManager;
     }
 
     public OpType create(OpType opType) {
@@ -90,6 +93,7 @@ public class OpTypeService {
             throw new InvalidDataException(message);
         }
         log.info("operation type has been updated by ID {}", id);
+        cacheManager.getCacheNames().forEach(cacheName -> cacheManager.getCache(cacheName).clear());
     }
 
     public void deleteById(long id) {
@@ -116,5 +120,6 @@ public class OpTypeService {
             throw new InvalidDataException(message);
         }
         log.info("operation type has been deleted by ID {}", id);
+        cacheManager.getCacheNames().forEach(cacheName -> cacheManager.getCache(cacheName).clear());
     }
 }

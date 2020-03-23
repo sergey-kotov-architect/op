@@ -10,6 +10,7 @@ import com.sergeykotov.op.task.ScheduleGenerationTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class ScheduleService {
         return opService.getScheduled(actorId);
     }
 
+    @Cacheable("metrics")
     public Metrics evaluateMetrics() {
         log.info("evaluating metrics...");
         long start = System.currentTimeMillis();

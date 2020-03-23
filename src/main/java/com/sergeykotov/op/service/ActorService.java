@@ -7,6 +7,7 @@ import com.sergeykotov.op.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -17,10 +18,12 @@ public class ActorService {
     private static final Logger log = LoggerFactory.getLogger(ActorService.class);
 
     private final ActorDao actorDao;
+    private final CacheManager cacheManager;
 
     @Autowired
-    public ActorService(ActorDao actorDao) {
+    public ActorService(ActorDao actorDao, CacheManager cacheManager) {
         this.actorDao = actorDao;
+        this.cacheManager = cacheManager;
     }
 
     public Actor create(Actor actor) {
@@ -90,6 +93,7 @@ public class ActorService {
             throw new InvalidDataException(message);
         }
         log.info("actor has been updated by ID {}", id);
+        cacheManager.getCacheNames().forEach(cacheName -> cacheManager.getCache(cacheName).clear());
     }
 
     public void deleteById(long id) {
@@ -116,5 +120,6 @@ public class ActorService {
             throw new InvalidDataException(message);
         }
         log.info("actor has been deleted by ID {}", id);
+        cacheManager.getCacheNames().forEach(cacheName -> cacheManager.getCache(cacheName).clear());
     }
 }

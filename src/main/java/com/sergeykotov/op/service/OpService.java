@@ -7,6 +7,8 @@ import com.sergeykotov.op.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -19,10 +21,12 @@ public class OpService {
     private static final Logger log = LoggerFactory.getLogger(OpService.class);
 
     private final OpDao opDao;
+    private final CacheManager cacheManager;
 
     @Autowired
-    public OpService(OpDao opDao) {
+    public OpService(OpDao opDao, CacheManager cacheManager) {
         this.opDao = opDao;
+        this.cacheManager = cacheManager;
     }
 
     public List<Op> create(List<Op> ops) {
@@ -49,6 +53,7 @@ public class OpService {
             throw new DatabaseException(message);
         }
         log.info("operations have been created: {}", ops);
+        cacheManager.getCacheNames().forEach(cacheName -> cacheManager.getCache(cacheName).clear());
         try {
             return getAll().stream().filter(ops::contains).collect(Collectors.toList());
         } catch (Exception e) {
@@ -57,6 +62,7 @@ public class OpService {
         }
     }
 
+    @Cacheable("ops")
     public List<Op> getAll() {
         try {
             return opDao.getAll();
@@ -77,6 +83,7 @@ public class OpService {
         }
     }
 
+    @Cacheable("scheduled_ops")
     public List<Op> getScheduled() {
         try {
             return opDao.getScheduled();
@@ -122,6 +129,7 @@ public class OpService {
             throw new InvalidDataException(message);
         }
         log.info("operation has been updated by ID {}", id);
+        cacheManager.getCacheNames().forEach(cacheName -> cacheManager.getCache(cacheName).clear());
     }
 
     public void updateByUser(List<Op> ops) {
@@ -129,6 +137,7 @@ public class OpService {
             throw new ModificationException();
         }
         update(ops);
+        cacheManager.getCacheNames().forEach(cacheName -> cacheManager.getCache(cacheName).clear());
     }
 
     public void update(List<Op> ops) {
@@ -178,6 +187,7 @@ public class OpService {
             throw new InvalidDataException(message);
         }
         log.info("operation has been deleted by ID {}", id);
+        cacheManager.getCacheNames().forEach(cacheName -> cacheManager.getCache(cacheName).clear());
     }
 
     public void deleteList(long[] ids) {
@@ -205,6 +215,7 @@ public class OpService {
             throw new InvalidDataException(message);
         }
         log.info("operations have been deleted by IDs {}", idList);
+        cacheManager.getCacheNames().forEach(cacheName -> cacheManager.getCache(cacheName).clear());
     }
 
     public String deleteUnscheduled() {
@@ -227,6 +238,7 @@ public class OpService {
         }
         String message = count + " unscheduled operations have been deleted";
         log.info(message);
+        cacheManager.getCacheNames().forEach(cacheName -> cacheManager.getCache(cacheName).clear());
         return message;
     }
 }
