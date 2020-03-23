@@ -44,6 +44,5 @@ engine.
 * design UI, probably using React framework
 * provide performance benchmarks
 * conduct profound static code analysis
-* cache evaluated metrics
 * introduce security layer
 * add integration tests
